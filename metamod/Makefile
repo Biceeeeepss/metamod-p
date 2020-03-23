@@ -120,9 +120,9 @@ ifeq "$(HOST)" "cygwin"
 	endif
 else
 	ifeq "$(TARGETTYPE)" "amd64"
-		CC=gcc -m64
+		CC=gcc-4.8 -m64
 	else
-		CC=gcc -m32
+		CC=gcc-4.8 -m32
 	endif
 endif
 
@@ -179,7 +179,7 @@ CCO += -flto -fvisibility=hidden
 ifeq "$(TARGETTYPE)" "amd64"
 	CCOPT_ARCH =
 else
-	CCOPT_ARCH = -march=i686 $(MCPU)=generic -msse -msse2
+	CCOPT_ARCH = -march=i686 $(MCPU)=generic -mmmx -msse -msse2 -s -pipe -mfpmath=sse
 endif
 
 # debugging; halt on warnings
@@ -196,7 +196,9 @@ FILES_ALL = *.cpp *.h [A-Z]* *.rc
 
 CFLAGS=-Wall -Wno-unknown-pragmas -Wno-attributes -Wno-write-strings
 
-CFLAGS+=-std=gnu++98 -Wno-c++11-compat
+#CFLAGS+=-std=gnu++98 -Wno-c++11-compat
+
+CFLAGS+=-std=gnu++11
 
 #CFLAGS += -DTEST
 

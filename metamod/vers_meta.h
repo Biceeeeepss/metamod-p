@@ -43,15 +43,15 @@
 #endif /* not OPT_TYPE */
 
 
-#define VDATE 			"2018/02/11"
-#define VPATCH_COPYRIGHT_YEAR   "2018"
+#define VDATE 			"2020/03/22"
+#define VPATCH_COPYRIGHT_YEAR   "2020"
 #define VMETA_VERSION		"1.21"
 
 #define VPATCH_NAME		"Metamod-P (mm-p)"
-#define VPATCH_IVERSION		38
-#define VPATCH_VERSION		"38"
-#define VPATCH_AUTHOR		"Jussi Kivilinna"
-#define VPATCH_WEBSITE		"http://metamod-p.sourceforge.net/"
+#define VPATCH_IVERSION		39
+#define VPATCH_VERSION		"-APG"
+#define VPATCH_AUTHOR		"Jussi Kivilinna & RoboCop"
+#define VPATCH_WEBSITE		"https://apg-clan.org/"
 
 #define VVERSION		VMETA_VERSION "p" VPATCH_VERSION
 #define RC_VERS_DWORD		1,21,0,VPATCH_IVERSION	// Version Windows DLL Resources in res_meta.rc
