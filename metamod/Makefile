@@ -120,9 +120,9 @@ ifeq "$(HOST)" "cygwin"
 	endif
 else
 	ifeq "$(TARGETTYPE)" "amd64"
-		CC=gcc-4.8 -m64
+		CC=gcc -m64
 	else
-		CC=gcc-4.8 -m32
+		CC=gcc -m32
 	endif
 endif
 
@@ -198,7 +198,7 @@ CFLAGS=-Wall -Wno-unknown-pragmas -Wno-attributes -Wno-write-strings
 
 #CFLAGS+=-std=gnu++98 -Wno-c++11-compat
 
-CFLAGS+=-std=gnu++11
+CFLAGS+=-std=gnu++11 -Wno-c++11-compat
 
 #CFLAGS += -DTEST
 

@@ -73,6 +73,8 @@ typedef void (*ENTITY_FN) (entvars_t *);
 //  - (plugin loaded) if func not found, dlsym
 //  - (plugin loaded) if func still not found, set missing, return
 //  - (plugin loaded, func found) call func
+
+// 'char *entStr' needs to be constant? [APG]RoboCop[CL] 
 #define LINK_ENTITY_TO_PLUGIN(entityName, pluginName) \
 	C_DLLEXPORT void entityName(entvars_t *pev); \
 	void entityName(entvars_t *pev) { \
