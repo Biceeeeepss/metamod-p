@@ -46,3 +46,5 @@ metamod/api_hook.cpp.PVS-Studio.cmd
 metamod/api_hook.cpp.PVS-Studio.preprocess.cmd.rsp
 metamod/api_hook.PVS-Studio.i
 metamod/Debug/metamod.log
+metamod/Debug/metamod.Build.CppClean.log
+metamod/Debug/metamod.vcxproj.FileListAbsolute.txt
