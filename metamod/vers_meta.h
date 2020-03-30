@@ -43,7 +43,7 @@
 #endif /* not OPT_TYPE */
 
 
-#define VDATE 			"2020/03/22"
+#define VDATE 			"2020/03/30"
 #define VPATCH_COPYRIGHT_YEAR   "2020"
 #define VMETA_VERSION		"1.21"
 

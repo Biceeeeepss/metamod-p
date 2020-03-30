@@ -59,7 +59,7 @@ DLLS_DIR=../dlls
 SDKSRC=../hlsdk
 METADIR=../metamod
 
-COMPILE_TZ=EET
+COMPILE_TZ=GMT
 ## Developer overrides
 ifeq "$(USER)" "jussi"
 	COMPILE_TZ=EET
@@ -197,8 +197,6 @@ FILES_ALL = *.cpp *.h [A-Z]* *.rc
 CFLAGS=-Wall -Wno-unknown-pragmas -Wno-attributes -Wno-write-strings
 
 #CFLAGS+=-std=gnu++98 -Wno-c++11-compat
-
-CFLAGS+=-std=gnu++11 -Wno-c++11-compat
 
 #CFLAGS += -DTEST
 
