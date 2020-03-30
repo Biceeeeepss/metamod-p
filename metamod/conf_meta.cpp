@@ -117,13 +117,13 @@ mBOOL DLLINTERNAL MConfig::set(option_t *setp, const char *setstr) {
 			META_DEBUG(3, ("set config bool: %s = %s", setp->name, *optval ? "true" : "false"));
 			break;
 		case CF_STR:
-			if(*optstr)
+//			if(*optstr)
 				free(*optstr);
 			*optstr=strdup(setstr);
 			META_DEBUG(3, ("set config string: %s = %s", setp->name, *optstr));
 			break;
 		case CF_PATH:
-			if(*optstr)
+//			if(*optstr)
 				free(*optstr);
 			full_gamedir_path(setstr, pathbuf);
 			*optstr=strdup(pathbuf);

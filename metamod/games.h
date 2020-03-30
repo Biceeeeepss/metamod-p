@@ -121,7 +121,7 @@
 	{ "snow",              "snow"MODARCH".so",         "snow.dll",          "Snow-War" },
 	{ "stargatetc",        "hl"MODARCH".so",           "hl.dll",            "StargateTC" },
 	{ "svencoop",          "hl"MODARCH".so",           "hl.dll",            "Sven Coop [Modification]" },
-	{ "svencoop",          "server.so",                "server.dll",        "Sven Coop [Steam Version]" },
+	//{ "svencoop",          "server.so",                "server.dll",        "Sven Coop [Steam Version]" },
 	{ "swarm",             "swarm"MODARCH".so",        "swarm.dll",         "Swarm" },
 	{ "tfc",               "tfc"MODARCH".so",          "tfc.dll",           "Team Fortress Classic" },
 	{ "thewastes",         "thewastes"MODARCH".so",    "thewastes.dll",     "The Wastes" },

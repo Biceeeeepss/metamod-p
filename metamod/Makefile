@@ -126,7 +126,7 @@ else
 	endif
 endif
 
-MCPU=-mcpu
+MCPU=-mtune
 
 ifeq "$(GCCMAJ)" "3"
 	ifeq "$(GCCMIN)" "4"

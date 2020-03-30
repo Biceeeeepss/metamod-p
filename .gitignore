@@ -68,3 +68,13 @@ metamod/engine_api.cpp.PVS-Studio.cmd
 metamod/engine_api.cpp.PVS-Studio.preprocess.cmd
 metamod/engine_api.cpp.PVS-Studio.preprocess.cmd.rsp
 metamod/engine_api.PVS-Studio.i
+*.cmd
+metamod/conf_meta.cpp.PVS-Studio.cfg
+metamod/conf_meta.cpp.PVS-Studio.preprocess.cmd.rsp
+metamod/conf_meta.PVS-Studio.i
+metamod/dllapi.cpp.PVS-Studio.cfg
+metamod/dllapi.cpp.PVS-Studio.preprocess.cmd.rsp
+metamod/dllapi.PVS-Studio.i
+metamod/log_meta.cpp.PVS-Studio.cfg
+metamod/log_meta.cpp.PVS-Studio.preprocess.cmd.rsp
+metamod/log_meta.PVS-Studio.i

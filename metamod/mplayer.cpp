@@ -55,7 +55,8 @@ MPlayer::MPlayer()
 // Destructor
 MPlayer::~MPlayer()
 {
-	if(cvarName) {
+//	if(cvarName) 
+	{
 		free(cvarName);
 	}
 }
@@ -77,7 +78,8 @@ MPlayer& DLLINTERNAL MPlayer::operator=(const MPlayer& rhs)
 {
 	isQueried = rhs.isQueried;
 
-	if(cvarName) {
+//	if(cvarName) 
+	{
 		free(cvarName);
 	}
 
@@ -105,7 +107,8 @@ void DLLINTERNAL MPlayer::set_cvar_query(const char *cvar)
 	}
 
 	isQueried = mTRUE;
-	if(cvarName) {
+//	if(cvarName) 
+	{
 		free(cvarName);
 	}
 
