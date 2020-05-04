@@ -45,7 +45,7 @@
 #include "osdep.h"				// win32 vsnprintf, etc
 #include "support_meta.h"		// MAX
 
-cvar_t meta_debug = {"meta_debug", "0", FCVAR_EXTDLL, 0, NULL};
+cvar_t meta_debug = { "meta_debug", "0", FCVAR_EXTDLL, 0, NULL };
 
 int meta_debug_value = 0; //meta_debug_value is converted from float(meta_debug.value) to int on every frame
 
@@ -56,10 +56,10 @@ enum MLOG_SERVICE {
 	mlsCLIENT
 };
 
-static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char *prefix, const char *fmt, va_list ap);
+static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* prefix, const char* fmt, va_list ap);
 
 // Print to console.
-void DLLINTERNAL META_CONS(const char *fmt, ...) {
+void DLLINTERNAL META_CONS(const char* fmt, ...) {
 	va_list ap;
 	char buf[MAX_LOGMSG_LEN];
 	unsigned int len;
@@ -67,26 +67,26 @@ void DLLINTERNAL META_CONS(const char *fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	len=strlen(buf);
-	if(len < sizeof(buf)-2) {	// -1 null, -1 for newline
-		buf[len+0] = '\n';
-		buf[len+1] = 0;
+	len = strlen(buf);
+	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
+		buf[len + 0] = '\n';
+		buf[len + 1] = 0;
 	}
 	else
-		buf[len-1] = '\n';
+		buf[len - 1] = '\n';
 
 	SERVER_PRINT(buf);
 }
 
 // Log developer-level messages (obsoleted).
-static const char *const prefixDEV = "[META] dev:";
-void DLLINTERNAL META_DEV(const char *fmt, ...) {
+static const char* const prefixDEV = "[META] dev:";
+void DLLINTERNAL META_DEV(const char* fmt, ...) {
 	va_list ap;
 	int dev;
 
-	if(NULL != g_engfuncs.pfnCVarGetFloat) {
-		dev=(int) CVAR_GET_FLOAT("developer");
-		if(dev==0) return;
+	if (NULL != g_engfuncs.pfnCVarGetFloat) {
+		dev = (int)CVAR_GET_FLOAT("developer");
+		if (dev == 0) return;
 	}
 
 	va_start(ap, fmt);
@@ -95,8 +95,8 @@ void DLLINTERNAL META_DEV(const char *fmt, ...) {
 }
 
 // Log infos.
-static const char *const prefixINFO = "[META] INFO:";
-void DLLINTERNAL META_INFO(const char *fmt, ...) {
+static const char* const prefixINFO = "[META] INFO:";
+void DLLINTERNAL META_INFO(const char* fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -105,8 +105,8 @@ void DLLINTERNAL META_INFO(const char *fmt, ...) {
 }
 
 // Log warnings.
-static const char *const prefixWARNING = "[META] WARNING:";
-void DLLINTERNAL META_WARNING(const char *fmt, ...) {
+static const char* const prefixWARNING = "[META] WARNING:";
+void DLLINTERNAL META_WARNING(const char* fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -115,8 +115,8 @@ void DLLINTERNAL META_WARNING(const char *fmt, ...) {
 }
 
 // Log errors.
-static const char *const prefixERROR = "[META] ERROR:";
-void DLLINTERNAL META_ERROR(const char *fmt, ...) {
+static const char* const prefixERROR = "[META] ERROR:";
+void DLLINTERNAL META_ERROR(const char* fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -125,8 +125,8 @@ void DLLINTERNAL META_ERROR(const char *fmt, ...) {
 }
 
 // Normal log messages.
-static const char *const prefixLOG = "[META]";
-void DLLINTERNAL META_LOG(const char *fmt, ...) {
+static const char* const prefixLOG = "[META]";
+void DLLINTERNAL META_LOG(const char* fmt, ...) {
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -135,7 +135,7 @@ void DLLINTERNAL META_LOG(const char *fmt, ...) {
 }
 
 // Print to client.
-void DLLINTERNAL META_CLIENT(edict_t *pEntity, const char *fmt, ...) {
+void DLLINTERNAL META_CLIENT(edict_t* pEntity, const char* fmt, ...) {
 	va_list ap;
 	char buf[MAX_CLIENTMSG_LEN];
 	unsigned int len;
@@ -143,13 +143,13 @@ void DLLINTERNAL META_CLIENT(edict_t *pEntity, const char *fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	len=strlen(buf);
-	if(len < sizeof(buf)-2)	{	// -1 null, -1 for newline
-		buf[len+0] = '\n';
-		buf[len+1] = 0;
+	len = strlen(buf);
+	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
+		buf[len + 0] = '\n';
+		buf[len + 1] = 0;
 	}
 	else
-		buf[len-1] = '\n';
+		buf[len - 1] = '\n';
 
 	CLIENT_PRINTF(pEntity, print_console, buf);
 }
@@ -162,14 +162,14 @@ void DLLINTERNAL META_DEBUG_SET_LEVEL(int level) {
 	debug_level = level;
 }
 
-void DLLINTERNAL META_DO_DEBUG(const char *fmt, ...) {
+void DLLINTERNAL META_DO_DEBUG(const char* fmt, ...) {
 	char meta_debug_str[1024];
 	va_list ap;
-	
+
 	va_start(ap, fmt);
 	safevoid_vsnprintf(meta_debug_str, sizeof(meta_debug_str), fmt, ap);
 	va_end(ap);
-	
+
 	ALERT(at_logged, "[META] (debug:%d) %s\n", debug_level, meta_debug_str);
 }
 
@@ -179,17 +179,17 @@ class BufferedMessage : public class_metamod_new {
 public:
 	MLOG_SERVICE service;
 	ALERT_TYPE atype;
-	const char *prefix;
+	const char* prefix;
 	char buf[MAX_LOGMSG_LEN];
-	BufferedMessage *next;
+	BufferedMessage* next;
 };
 
-static BufferedMessage *messageQueueStart = NULL;
-static BufferedMessage *messageQueueEnd   = NULL;
+static BufferedMessage* messageQueueStart = NULL;
+static BufferedMessage* messageQueueEnd = NULL;
 
-static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char *prefix, const char *fmt, va_list ap) {
+static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* prefix, const char* fmt, va_list ap) {
 	char buf[MAX_LOGMSG_LEN];
-	BufferedMessage *msg;
+	BufferedMessage* msg;
 
 	if (NULL != g_engfuncs.pfnAlertMessage) {
 		vsnprintf(buf, sizeof(buf), fmt, ap);
@@ -211,24 +211,25 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char *p
 
 	if (NULL == messageQueueEnd) {
 		messageQueueStart = messageQueueEnd = msg;
-	} else {
+	}
+	else {
 		messageQueueEnd->next = msg;
 		messageQueueEnd = msg;
-	}	
-} 
-
+	}
+}
 
 // Flushes the message queue, printing messages to the respective
 // service. This function doesn't check anymore if the g_engfuncs
 // jumptable is set. Don't call it if it isn't set.
 void DLLINTERNAL flush_ALERT_buffer(void) {
-	BufferedMessage *msg = messageQueueStart;
-	int dev = (int) CVAR_GET_FLOAT("developer");
+	BufferedMessage* msg = messageQueueStart;
+	int dev = (int)CVAR_GET_FLOAT("developer");
 
 	while (NULL != msg) {
-		if(msg->service == mlsDEV && dev==0) {
+		if (msg->service == mlsDEV && dev == 0) {
 			;
-		} else {
+		}
+		else {
 			ALERT(msg->atype, "b>%s %s\n", msg->prefix, msg->buf);
 		}
 		messageQueueStart = messageQueueStart->next;

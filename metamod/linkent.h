@@ -45,10 +45,8 @@
 #include "mplugin.h"	// MPlugin::info, etc
 #include "log_meta.h"	// META_DEBUG, etc
 
-
-//Initializes replacement code
+ //Initializes replacement code
 int DLLINTERNAL init_linkent_replacement(DLHANDLE moduleMetamod, DLHANDLE moduleGame);
-
 
 // Comments from SDK dlls/util.h:
 //! This is the glue that hooks .MAP entity class names to our CPP classes.
@@ -57,8 +55,7 @@ int DLLINTERNAL init_linkent_replacement(DLHANDLE moduleMetamod, DLHANDLE module
 
 // Adapted from LINK_ENTITY_TO_FUNC in adminmod linkfunc.cpp.
 
-typedef void (*ENTITY_FN) (entvars_t *);
-
+typedef void (*ENTITY_FN) (entvars_t*);
 
 // For now, we have to explicitly export functions for plugin entities,
 // just as for gamedll entities.  Ideally, this could be generalized in
@@ -74,7 +71,7 @@ typedef void (*ENTITY_FN) (entvars_t *);
 //  - (plugin loaded) if func still not found, set missing, return
 //  - (plugin loaded, func found) call func
 
-// 'char *entStr' needs to be constant? [APG]RoboCop[CL] 
+// 'char *entStr' needs to be constant? [APG]RoboCop[CL]
 #define LINK_ENTITY_TO_PLUGIN(entityName, pluginName) \
 	C_DLLEXPORT void entityName(entvars_t *pev); \
 	void entityName(entvars_t *pev) { \

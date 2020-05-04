@@ -42,7 +42,7 @@
 #include "mhook.h"		// game_event_t, etc
 #include "sdk_util.h"	// hudtextparms_t, etc
 
-// max buffer size for printed messages
+ // max buffer size for printed messages
 #define MAX_LOGMSG_LEN  1024
 
 // For GetGameInfo:
@@ -57,31 +57,31 @@ typedef enum {
 
 // Meta Utility Function table type.
 typedef struct meta_util_funcs_s {
-	void		(*pfnLogConsole)		(plid_t plid, const char *fmt, ...);
-	void		(*pfnLogMessage)		(plid_t plid, const char *fmt, ...);
-	void		(*pfnLogError)			(plid_t plid, const char *fmt, ...);
-	void		(*pfnLogDeveloper)		(plid_t plid, const char *fmt, ...);
-	void		(*pfnCenterSay)			(plid_t plid, const char *fmt, ...);
-	void		(*pfnCenterSayParms)	(plid_t plid, hudtextparms_t tparms, 
-											const char *fmt, ...);
-	void		(*pfnCenterSayVarargs)	(plid_t plid, hudtextparms_t tparms, 
-											const char *fmt, va_list ap);
-	qboolean	(*pfnCallGameEntity)	(plid_t plid, const char *entStr,
-											entvars_t *pev);
-	int			(*pfnGetUserMsgID)		(plid_t plid, const char *msgname, int *size);
-	const char *(*pfnGetUserMsgName)	(plid_t plid, int msgid, int *size);
-	const char *(*pfnGetPluginPath)		(plid_t plid);
-	const char *(*pfnGetGameInfo)		(plid_t plid, ginfo_t tag);
-	
-	int (*pfnLoadPlugin)(plid_t plid, const char *cmdline, PLUG_LOADTIME now, void **plugin_handle);
-	int (*pfnUnloadPlugin)(plid_t plid, const char *cmdline, PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
-	int (*pfnUnloadPluginByHandle)(plid_t plid, void *plugin_handle, PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
-	
-	const char *(*pfnIsQueryingClientCvar)	(plid_t plid, const edict_t *player);
-	
+	void		(*pfnLogConsole)		(plid_t plid, const char* fmt, ...);
+	void		(*pfnLogMessage)		(plid_t plid, const char* fmt, ...);
+	void		(*pfnLogError)			(plid_t plid, const char* fmt, ...);
+	void		(*pfnLogDeveloper)		(plid_t plid, const char* fmt, ...);
+	void		(*pfnCenterSay)			(plid_t plid, const char* fmt, ...);
+	void		(*pfnCenterSayParms)	(plid_t plid, hudtextparms_t tparms,
+		const char* fmt, ...);
+	void		(*pfnCenterSayVarargs)	(plid_t plid, hudtextparms_t tparms,
+		const char* fmt, va_list ap);
+	qboolean(*pfnCallGameEntity)	(plid_t plid, const char* entStr,
+		entvars_t* pev);
+	int			(*pfnGetUserMsgID)		(plid_t plid, const char* msgname, int* size);
+	const char* (*pfnGetUserMsgName)	(plid_t plid, int msgid, int* size);
+	const char* (*pfnGetPluginPath)		(plid_t plid);
+	const char* (*pfnGetGameInfo)		(plid_t plid, ginfo_t tag);
+
+	int (*pfnLoadPlugin)(plid_t plid, const char* cmdline, PLUG_LOADTIME now, void** plugin_handle);
+	int (*pfnUnloadPlugin)(plid_t plid, const char* cmdline, PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
+	int (*pfnUnloadPluginByHandle)(plid_t plid, void* plugin_handle, PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
+
+	const char* (*pfnIsQueryingClientCvar)	(plid_t plid, const edict_t* player);
+
 	int (*pfnMakeRequestID)	(plid_t plid);
-	
-	void            (*pfnGetHookTables)             (plid_t plid, enginefuncs_t **peng, DLL_FUNCTIONS **pdll, NEW_DLL_FUNCTIONS **pnewdll);
+
+	void            (*pfnGetHookTables)             (plid_t plid, enginefuncs_t** peng, DLL_FUNCTIONS** pdll, NEW_DLL_FUNCTIONS** pnewdll);
 } mutil_funcs_t;
 extern mutil_funcs_t MetaUtilFunctions DLLHIDDEN;
 

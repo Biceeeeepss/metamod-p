@@ -48,7 +48,7 @@
 #include "meta_eiface.h"        // HL_enginefuncs_t, meta_enginefuncs_t
 #include "engine_t.h"           // engine_t, Engine
 
-// file that lists plugins to load at startup
+ // file that lists plugins to load at startup
 #define PLUGINS_INI			"addons/metamod/plugins.ini"
 #define OLD_PLUGINS_INI		"metamod.ini"
 
@@ -71,10 +71,10 @@ extern cvar_t meta_version DLLHIDDEN;
 // Info about the game dll/mod.
 typedef struct gamedll_s {
 	char name[NAME_MAX];		// ie "cstrike" (from gamedir)
-	const char *desc;				// ie "Counter-Strike"
+	const char* desc;				// ie "Counter-Strike"
 	char gamedir[PATH_MAX];		// ie "/home/willday/half-life/cstrike"
 	char pathname[PATH_MAX];	// ie "/home/willday/half-life/cstrike/dlls/cs_i386.so"
-	char const *file;			// ie "cs_i386.so"
+	char const* file;			// ie "cs_i386.so"
 	char real_pathname[PATH_MAX];	// in case pathname overridden by bot, etc
 	DLHANDLE handle;
 	gamedll_funcs_t funcs;		// dllapi_table, newapi_table
@@ -83,25 +83,25 @@ extern gamedll_t GameDLL DLLHIDDEN;
 
 // SDK variables for storing engine funcs and globals.
 extern HL_enginefuncs_t g_engfuncs DLLHIDDEN;
-extern globalvars_t *gpGlobals DLLHIDDEN;
+extern globalvars_t* gpGlobals DLLHIDDEN;
 
 // Our modified version of the engine funcs, to give to plugins.
 extern meta_enginefuncs_t g_plugin_engfuncs DLLHIDDEN;
 
 // Config structure.
-extern MConfig *Config DLLHIDDEN;
+extern MConfig* Config DLLHIDDEN;
 
 // List of plugins loaded/opened/running.
-extern MPluginList *Plugins DLLHIDDEN;
+extern MPluginList* Plugins DLLHIDDEN;
 
 // List of command functions registered by plugins.
-extern MRegCmdList *RegCmds DLLHIDDEN;
+extern MRegCmdList* RegCmds DLLHIDDEN;
 
 // List of cvar structures registered by plugins.
-extern MRegCvarList *RegCvars DLLHIDDEN;
+extern MRegCvarList* RegCvars DLLHIDDEN;
 
 // List of user messages registered by gamedll.
-extern MRegMsgList *RegMsgs DLLHIDDEN;
+extern MRegMsgList* RegMsgs DLLHIDDEN;
 
 // Data provided to plugins.
 // Separate copies to prevent plugins from modifying "readable" parts.
@@ -110,8 +110,8 @@ extern meta_globals_t PublicMetaGlobals DLLHIDDEN;
 extern meta_globals_t PrivateMetaGlobals DLLHIDDEN;
 
 // hook function tables
-extern DLL_FUNCTIONS *g_pHookedDllFunctions DLLHIDDEN;
-extern NEW_DLL_FUNCTIONS *g_pHookedNewDllFunctions DLLHIDDEN;
+extern DLL_FUNCTIONS* g_pHookedDllFunctions DLLHIDDEN;
+extern NEW_DLL_FUNCTIONS* g_pHookedNewDllFunctions DLLHIDDEN;
 
 extern int metamod_not_loaded DLLHIDDEN;
 
@@ -207,9 +207,9 @@ extern unsigned long long active_tsc DLLHIDDEN;
 extern unsigned long long min_tsc DLLHIDDEN;
 
 inline unsigned long long DLLINTERNAL GET_TSC(void) {
-	union { struct { unsigned int eax, edx;	} split; unsigned long long full; } tsc;
+	union { struct { unsigned int eax, edx; } split; unsigned long long full; } tsc;
 #ifdef __GNUC__
-	__asm__ __volatile__("rdtsc":"=a"(tsc.split.eax), "=d"(tsc.split.edx));	
+	__asm__ __volatile__("rdtsc":"=a"(tsc.split.eax), "=d"(tsc.split.edx));
 #else
 	__asm
 	{

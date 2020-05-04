@@ -44,25 +44,25 @@
 #include "osdep.h"				// DLLEXPORT, etc
 #include "mutil.h"
 
-// Version consists of "major:minor", two separate integer numbers.
-// Version 1	original
-// Version 2	added plugin_info_t **pinfo
-// Version 3	init split into query and attach, added detach
-// Version 4	added (PLUG_LOADTIME now) to attach
-// Version 5	changed mm ifvers int* to string, moved pl ifvers to info
-// Version 5:1	added link support for entity "adminmod_timer" (adminmod)
-// Version 5:2	added gamedll_funcs to meta_attach() [v1.0-rc2]
-// Version 5:3	added mutil_funcs to meta_query() [v1.05]
-// Version 5:4	added centersay utility functions [v1.06]
-// Version 5:5	added Meta_Init to plugin API [v1.08]
-// Version 5:6	added CallGameEntity utility function [v1.09]
-// Version 5:7	added GetUserMsgID, GetUserMsgName util funcs [v1.11]
-// Version 5:8	added GetPluginPath [v1.11]
-// Version 5:9	added GetGameInfo [v1.14]
-// Version 5:10 added GINFO_REALDLL_FULLPATH for GetGameInfo [v1.17]
-// Version 5:11 added plugin loading and unloading API [v1.18]
-// Version 5:12 added IS_QUERYING_CLIENT_CVAR to mutils [v1.18]
-// Version 5:13 added MAKE_REQUESTID and GET_HOOK_TABLES to mutils [v1.19]
+ // Version consists of "major:minor", two separate integer numbers.
+ // Version 1	original
+ // Version 2	added plugin_info_t **pinfo
+ // Version 3	init split into query and attach, added detach
+ // Version 4	added (PLUG_LOADTIME now) to attach
+ // Version 5	changed mm ifvers int* to string, moved pl ifvers to info
+ // Version 5:1	added link support for entity "adminmod_timer" (adminmod)
+ // Version 5:2	added gamedll_funcs to meta_attach() [v1.0-rc2]
+ // Version 5:3	added mutil_funcs to meta_query() [v1.05]
+ // Version 5:4	added centersay utility functions [v1.06]
+ // Version 5:5	added Meta_Init to plugin API [v1.08]
+ // Version 5:6	added CallGameEntity utility function [v1.09]
+ // Version 5:7	added GetUserMsgID, GetUserMsgName util funcs [v1.11]
+ // Version 5:8	added GetPluginPath [v1.11]
+ // Version 5:9	added GetGameInfo [v1.14]
+ // Version 5:10 added GINFO_REALDLL_FULLPATH for GetGameInfo [v1.17]
+ // Version 5:11 added plugin loading and unloading API [v1.18]
+ // Version 5:12 added IS_QUERYING_CLIENT_CVAR to mutils [v1.18]
+ // Version 5:13 added MAKE_REQUESTID and GET_HOOK_TABLES to mutils [v1.19]
 #define META_INTERFACE_VERSION "5:13"
 
 // Flags returned by a plugin's api function.
@@ -80,11 +80,11 @@ typedef struct meta_globals_s {
 	META_RES mres;			// writable; plugin's return flag
 	META_RES prev_mres;		// readable; return flag of the previous plugin called
 	META_RES status;		// readable; "highest" return flag so far
-	void *orig_ret;			// readable; return value from "real" function
-	void *override_ret;		// readable; return value from overriding/superceding plugin
+	void* orig_ret;			// readable; return value from "real" function
+	void* override_ret;		// readable; return value from overriding/superceding plugin
 } meta_globals_t;
 
-extern meta_globals_t *gpMetaGlobals DLLHIDDEN;
+extern meta_globals_t* gpMetaGlobals DLLHIDDEN;
 #define SET_META_RESULT(result)			gpMetaGlobals->mres=result
 #define RETURN_META(result) \
 	do { gpMetaGlobals->mres=result; return; } while(0)
@@ -109,13 +109,13 @@ typedef struct {
 
 // Pair of function tables provided by game DLL.
 typedef struct {
-	DLL_FUNCTIONS *dllapi_table;
-	NEW_DLL_FUNCTIONS *newapi_table;
+	DLL_FUNCTIONS* dllapi_table;
+	NEW_DLL_FUNCTIONS* newapi_table;
 } gamedll_funcs_t;
 
 // Declared in plugin; referenced in macros.
-extern gamedll_funcs_t *gpGamedllFuncs DLLHIDDEN;
-extern mutil_funcs_t *gpMetaUtilFuncs DLLHIDDEN;
+extern gamedll_funcs_t* gpGamedllFuncs DLLHIDDEN;
+extern mutil_funcs_t* gpMetaUtilFuncs DLLHIDDEN;
 
 // Tell the dll that we'll be loading it as a metamod plugin, in case it
 // needs to do something special prior to the standard query/attach
@@ -127,41 +127,41 @@ typedef void (*META_INIT_FN) (void);
 
 // Get info about plugin, compare meta_interface versions, provide meta
 // utility callback functions.
-C_DLLEXPORT int Meta_Query(char *interfaceVersion, 
-		plugin_info_t **plinfo, 
-		mutil_funcs_t *pMetaUtilFuncs);
-typedef int (*META_QUERY_FN) (char *interfaceVersion, 
-		plugin_info_t **plinfo, 
-		mutil_funcs_t *pMetaUtilFuncs);
+C_DLLEXPORT int Meta_Query(char* interfaceVersion,
+	plugin_info_t** plinfo,
+	mutil_funcs_t* pMetaUtilFuncs);
+typedef int (*META_QUERY_FN) (char* interfaceVersion,
+	plugin_info_t** plinfo,
+	mutil_funcs_t* pMetaUtilFuncs);
 
-// Attach the plugin to the API; get the table of getapi functions; give 
+// Attach the plugin to the API; get the table of getapi functions; give
 // meta_globals and gamedll_funcs.
-C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now, 
-		META_FUNCTIONS *pFunctionTable, 
-		meta_globals_t *pMGlobals, 
-		gamedll_funcs_t *pGamedllFuncs);
-typedef int (*META_ATTACH_FN) (PLUG_LOADTIME now, 
-		META_FUNCTIONS *pFunctionTable, 
-		meta_globals_t *pMGlobals, 
-		gamedll_funcs_t *pGamedllFuncs);
+C_DLLEXPORT int Meta_Attach(PLUG_LOADTIME now,
+	META_FUNCTIONS* pFunctionTable,
+	meta_globals_t* pMGlobals,
+	gamedll_funcs_t* pGamedllFuncs);
+typedef int (*META_ATTACH_FN) (PLUG_LOADTIME now,
+	META_FUNCTIONS* pFunctionTable,
+	meta_globals_t* pMGlobals,
+	gamedll_funcs_t* pGamedllFuncs);
 
 // Detach the plugin; tell why and when.
 C_DLLEXPORT int Meta_Detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
 typedef int (*META_DETACH_FN) (PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
 
 // Standard HL SDK interface function prototypes.
-C_DLLEXPORT int GetEntityAPI_Post(DLL_FUNCTIONS *pFunctionTable, 
-		int interfaceVersion );
-C_DLLEXPORT int GetEntityAPI2_Post(DLL_FUNCTIONS *pFunctionTable, 
-		int *interfaceVersion );
+C_DLLEXPORT int GetEntityAPI_Post(DLL_FUNCTIONS* pFunctionTable,
+	int interfaceVersion);
+C_DLLEXPORT int GetEntityAPI2_Post(DLL_FUNCTIONS* pFunctionTable,
+	int* interfaceVersion);
 
 // Additional SDK-like interface function prototypes.
-C_DLLEXPORT int GetNewDLLFunctions_Post(NEW_DLL_FUNCTIONS *pNewFunctionTable, 
-		int *interfaceVersion );
-C_DLLEXPORT int GetEngineFunctions(enginefuncs_t *pengfuncsFromEngine, 
-		int *interfaceVersion);
-C_DLLEXPORT int GetEngineFunctions_Post(enginefuncs_t *pengfuncsFromEngine, 
-		int *interfaceVersion);
+C_DLLEXPORT int GetNewDLLFunctions_Post(NEW_DLL_FUNCTIONS* pNewFunctionTable,
+	int* interfaceVersion);
+C_DLLEXPORT int GetEngineFunctions(enginefuncs_t* pengfuncsFromEngine,
+	int* interfaceVersion);
+C_DLLEXPORT int GetEngineFunctions_Post(enginefuncs_t* pengfuncsFromEngine,
+	int* interfaceVersion);
 
 // Convenience macros for accessing GameDLL functions.  Note: these talk
 // _directly_ to the gamedll, and are not multiplexed through Metamod to

@@ -41,12 +41,10 @@
 #include "types_meta.h"			// mBOOL
 #include "ret_type.h"
 
-
 #define P_PRE 0		// plugin function called before gamedll
 #define P_POST 1	// plugin function called after gamedll
 
-
-// API selector
+ // API selector
 typedef enum enum_api_t {
 	e_api_engine = 0,
 	e_api_dllapi = 1,
@@ -54,16 +52,14 @@ typedef enum enum_api_t {
 } enum_api_t;
 
 // API caller function prototype
-typedef void * (DLLINTERNAL_NOVIS * api_caller_func_t)(const void * func, const void * packed_args);
-
+typedef void* (DLLINTERNAL_NOVIS* api_caller_func_t)(const void* func, const void* packed_args);
 
 typedef struct api_info_s {
 	mBOOL trace;			// if true, log info about this function
 	int loglevel;			// level at which to log info about this function
 	api_caller_func_t api_caller;	// argument format/type for single-main-hook-function optimization
-	const char *name;		// string representation of function name
+	const char* name;		// string representation of function name
 } api_info_t;
-
 
 // DLL api functions
 typedef struct dllapi_info_s {
@@ -120,7 +116,6 @@ typedef struct dllapi_info_s {
 	api_info_t END;
 } dllapi_info_t;
 
-
 // "New" api functions
 typedef struct newapi_info_s {
 	api_info_t pfnOnFreeEntPrivateData;
@@ -132,7 +127,6 @@ typedef struct newapi_info_s {
 	api_info_t pfnCvarValue2;
 	api_info_t END;
 } newapi_info_t;
-
 
 // Engine functions
 typedef struct engine_info_s {
@@ -303,7 +297,6 @@ typedef struct engine_info_s {
 	// end
 	api_info_t END;
 } engine_info_t;
-
 
 extern const dllapi_info_t dllapi_info DLLHIDDEN;
 extern const newapi_info_t newapi_info DLLHIDDEN;

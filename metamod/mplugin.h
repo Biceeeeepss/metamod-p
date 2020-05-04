@@ -49,18 +49,17 @@
 #include "osdep.h"
 #include "new_baseclass.h"
 
-
-// Flags to indicate current "load" state of plugin.
-// NOTE: order is important, as greater/less comparisons are made.
+ // Flags to indicate current "load" state of plugin.
+ // NOTE: order is important, as greater/less comparisons are made.
 typedef enum {
 	PL_EMPTY = 0,			// empty slot
 	PL_VALID,			// has valid info in it
-	PL_BADFILE,			// nonexistent file (open failed), 
+	PL_BADFILE,			// nonexistent file (open failed),
 					//    or not a valid plugin file (query failed)
-	PL_OPENED,			// dlopened and queried
-	PL_FAILED,			// opened, but failed to attach or unattach
-	PL_RUNNING,			// attached and running
-	PL_PAUSED,			// attached but paused
+					PL_OPENED,			// dlopened and queried
+					PL_FAILED,			// opened, but failed to attach or unattach
+					PL_RUNNING,			// attached and running
+					PL_PAUSED,			// attached but paused
 } PLUG_STATUS;
 
 // Action to take for plugin at next opportunity.
@@ -109,102 +108,102 @@ typedef enum {
 
 // api table list
 typedef struct {
-	enginefuncs_t *engine;
-	DLL_FUNCTIONS *dllapi;
-	NEW_DLL_FUNCTIONS *newapi;
+	enginefuncs_t* engine;
+	DLL_FUNCTIONS* dllapi;
+	NEW_DLL_FUNCTIONS* newapi;
 } api_tables_t;
 
 // An individual plugin.
 class MPlugin : public class_metamod_new {
-	public:
+public:
 	// data:
 		// reordered for faster api_hook.cpp functions
-		PLUG_STATUS status;				// current status of plugin (loaded, etc)
-		api_tables_t tables;
-		api_tables_t post_tables;
-		
-		inline DLLINTERNAL void * get_api_table(enum_api_t api) {
-			return(((void**)&tables)[api]);
-		}
-		inline DLLINTERNAL void * get_api_post_table(enum_api_t api) {
-			return(((void**)&post_tables)[api]);
-		}
-		
-		int index;					// 1-based
-		int pfspecific;                  		// level of specific platform affinity, used during load time
-		PLUG_ACTION action;				// what to do with plugin (load, unload, etc)
-		PLOAD_SOURCE source;				// source of the request to load the plugin
-		int source_plugin_index;			// index of plugin that loaded this plugin. -1 means source plugin has been unloaded.
-		int unloader_index;
-		mBOOL is_unloader;				// fix to prevent other plugins unload active unloader.
-		
-		DLHANDLE handle;				// handle for dlopen, dlsym, etc
-		plugin_info_t *info;				// information plugin provides about itself
-		time_t time_loaded;				// when plugin was loaded
-		
-		char filename[PATH_MAX];			// ie "dlls/mm_test_i386.so", from inifile
-		char *file;					// ie "mm_test_i386.so", ptr from filename
-		char desc[MAX_DESC_LEN];			// ie "Test metamod plugin", from inifile
-		char pathname[PATH_MAX];			// UNIQUE, ie "/home/willday/half-life/cstrike/dlls/mm_test_i386.so", built with GameDLL.gamedir
-		
-	// functions:		
-		mBOOL DLLINTERNAL ini_parseline(const char *line);		// parse line from inifile
-		mBOOL DLLINTERNAL cmd_parseline(const char *line);		// parse from console command
-		mBOOL DLLINTERNAL plugin_parseline(const char *fname, int loader_index); // parse from plugin
-		mBOOL DLLINTERNAL check_input(void);
-		
-		mBOOL DLLINTERNAL resolve(void);				// find a matching file on disk
-		char * DLLINTERNAL resolve_dirs(const char *path);
-		char * DLLINTERNAL resolve_prefix(const char *path);
-		char * DLLINTERNAL resolve_suffix(const char *path);
-		static mBOOL DLLINTERNAL is_platform_postfix(const char *pf);
+	PLUG_STATUS status;				// current status of plugin (loaded, etc)
+	api_tables_t tables;
+	api_tables_t post_tables;
 
-		mBOOL DLLINTERNAL platform_match(MPlugin* plugin);
-		
-		mBOOL DLLINTERNAL load(PLUG_LOADTIME now);
-		mBOOL DLLINTERNAL unload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason, PL_UNLOAD_REASON real_reason);
-		mBOOL DLLINTERNAL reload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
-		mBOOL DLLINTERNAL pause(void);
-		mBOOL DLLINTERNAL unpause(void);
-		mBOOL DLLINTERNAL retry(PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // if previously failed
-		void DLLINTERNAL free_api_pointers(void);
-		mBOOL DLLINTERNAL clear(void);
-		mBOOL DLLINTERNAL plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // other plugin unloading
-		void DLLINTERNAL show(void);				// print info about plugin to console
+	inline DLLINTERNAL void* get_api_table(enum_api_t api) {
+		return(((void**)&tables)[api]);
+	}
+	inline DLLINTERNAL void* get_api_post_table(enum_api_t api) {
+		return(((void**)&post_tables)[api]);
+	}
 
-		mBOOL DLLINTERNAL newer_file(void);			// check for newer file on disk
+	int index;					// 1-based
+	int pfspecific;                  		// level of specific platform affinity, used during load time
+	PLUG_ACTION action;				// what to do with plugin (load, unload, etc)
+	PLOAD_SOURCE source;				// source of the request to load the plugin
+	int source_plugin_index;			// index of plugin that loaded this plugin. -1 means source plugin has been unloaded.
+	int unloader_index;
+	mBOOL is_unloader;				// fix to prevent other plugins unload active unloader.
 
-	// output string functions
-		const char * DLLINTERNAL str_status(STR_STATUS fmt);
-		const char * DLLINTERNAL str_action(STR_ACTION fmt);
-		const char * DLLINTERNAL str_source(STR_SOURCE fmt);
+	DLHANDLE handle;				// handle for dlopen, dlsym, etc
+	plugin_info_t* info;				// information plugin provides about itself
+	time_t time_loaded;				// when plugin was loaded
 
-		const char * DLLINTERNAL str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason);
-		const char * DLLINTERNAL str_loadtime(PLUG_LOADTIME pallow, STR_LOADTIME fmt);
+	char filename[PATH_MAX];			// ie "dlls/mm_test_i386.so", from inifile
+	char* file;					// ie "mm_test_i386.so", ptr from filename
+	char desc[MAX_DESC_LEN];			// ie "Test metamod plugin", from inifile
+	char pathname[PATH_MAX];			// UNIQUE, ie "/home/willday/half-life/cstrike/dlls/mm_test_i386.so", built with GameDLL.gamedir
 
-		inline const char * DLLINTERNAL str_status(void)		{ return(str_status(ST_SIMPLE)); };
-		inline const char * DLLINTERNAL str_action(void)		{ return(str_action(SA_SIMPLE)); };
-		inline const char * DLLINTERNAL str_source(void)		{ return(str_source(SO_SIMPLE)); };
+// functions:
+	mBOOL DLLINTERNAL ini_parseline(const char* line);		// parse line from inifile
+	mBOOL DLLINTERNAL cmd_parseline(const char* line);		// parse from console command
+	mBOOL DLLINTERNAL plugin_parseline(const char* fname, int loader_index); // parse from plugin
+	mBOOL DLLINTERNAL check_input(void);
 
-		inline const char * DLLINTERNAL str_loadable(void) { 
-			return(info?str_loadtime(info->loadable, SL_SIMPLE):" -");
-		};
-		inline const char * DLLINTERNAL str_unloadable(void) { 
-			return(info?str_loadtime(info->unloadable, SL_SIMPLE):" -");
-		};
-		inline const char * DLLINTERNAL str_loadable(STR_LOADTIME fmt) { 
-			return(info?str_loadtime(info->loadable, fmt):" -");
-		};
-		inline const char * DLLINTERNAL str_unloadable(STR_LOADTIME fmt) { 
-			return(info?str_loadtime(info->unloadable, fmt):" -");
-		};
-	private:
-		mBOOL DLLINTERNAL query(void);
-		mBOOL DLLINTERNAL attach(PLUG_LOADTIME now);
-		mBOOL DLLINTERNAL detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
-		
-		gamedll_funcs_t gamedll_funcs;
-		mutil_funcs_t mutil_funcs;
+	mBOOL DLLINTERNAL resolve(void);				// find a matching file on disk
+	char* DLLINTERNAL resolve_dirs(const char* path);
+	char* DLLINTERNAL resolve_prefix(const char* path);
+	char* DLLINTERNAL resolve_suffix(const char* path);
+	static mBOOL DLLINTERNAL is_platform_postfix(const char* pf);
+
+	mBOOL DLLINTERNAL platform_match(MPlugin* plugin);
+
+	mBOOL DLLINTERNAL load(PLUG_LOADTIME now);
+	mBOOL DLLINTERNAL unload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason, PL_UNLOAD_REASON real_reason);
+	mBOOL DLLINTERNAL reload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
+	mBOOL DLLINTERNAL pause(void);
+	mBOOL DLLINTERNAL unpause(void);
+	mBOOL DLLINTERNAL retry(PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // if previously failed
+	void DLLINTERNAL free_api_pointers(void);
+	mBOOL DLLINTERNAL clear(void);
+	mBOOL DLLINTERNAL plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // other plugin unloading
+	void DLLINTERNAL show(void);				// print info about plugin to console
+
+	mBOOL DLLINTERNAL newer_file(void);			// check for newer file on disk
+
+// output string functions
+	const char* DLLINTERNAL str_status(STR_STATUS fmt);
+	const char* DLLINTERNAL str_action(STR_ACTION fmt);
+	const char* DLLINTERNAL str_source(STR_SOURCE fmt);
+
+	const char* DLLINTERNAL str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason);
+	const char* DLLINTERNAL str_loadtime(PLUG_LOADTIME pallow, STR_LOADTIME fmt);
+
+	inline const char* DLLINTERNAL str_status(void) { return(str_status(ST_SIMPLE)); };
+	inline const char* DLLINTERNAL str_action(void) { return(str_action(SA_SIMPLE)); };
+	inline const char* DLLINTERNAL str_source(void) { return(str_source(SO_SIMPLE)); };
+
+	inline const char* DLLINTERNAL str_loadable(void) {
+		return(info ? str_loadtime(info->loadable, SL_SIMPLE) : " -");
+	};
+	inline const char* DLLINTERNAL str_unloadable(void) {
+		return(info ? str_loadtime(info->unloadable, SL_SIMPLE) : " -");
+	};
+	inline const char* DLLINTERNAL str_loadable(STR_LOADTIME fmt) {
+		return(info ? str_loadtime(info->loadable, fmt) : " -");
+	};
+	inline const char* DLLINTERNAL str_unloadable(STR_LOADTIME fmt) {
+		return(info ? str_loadtime(info->unloadable, fmt) : " -");
+	};
+private:
+	mBOOL DLLINTERNAL query(void);
+	mBOOL DLLINTERNAL attach(PLUG_LOADTIME now);
+	mBOOL DLLINTERNAL detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason);
+
+	gamedll_funcs_t gamedll_funcs;
+	mutil_funcs_t mutil_funcs;
 };
 
 // Macros used by MPlugin::show(), to list the functions that the plugin

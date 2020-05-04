@@ -173,13 +173,13 @@ CCOPT = $(CCO) $(CCOPT_ARCH) -fno-exceptions -fno-rtti
 
 # optimization level; overridden for certain problematic files
 CCO = -O2 -fomit-frame-pointer -funsafe-math-optimizations
-CCO += -flto -fvisibility=hidden -fno-aggressive-loop-optimizations
+CCO += -flto -fvisibility=hidden
 
 # architecture tuning by target type
 ifeq "$(TARGETTYPE)" "amd64"
 	CCOPT_ARCH =
 else
-	CCOPT_ARCH = -march=i686 $(MCPU)=generic -mmmx -msse -msse2 -s -pipe -mfpmath=sse
+	CCOPT_ARCH = -march=i686 $(MCPU)=generic -mmmx -msse -msse2 -pipe -mfpmath=sse
 endif
 
 # debugging; halt on warnings

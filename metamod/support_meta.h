@@ -47,22 +47,22 @@
 void DLLINTERNAL do_exit(int exitval);
 
 //use pointer to avoid inlining of strcmp
-inline int DLLINTERNAL mm_strcmp(const char *s1, const char *s2) {
+inline int DLLINTERNAL mm_strcmp(const char* s1, const char* s2) {
 #if 0
 	int (*__strcmp)(const char*, const char*) = &strcmp;
 	return((*__strcmp)(s1, s2));
 #else
-	return(strcmp(s1,s2));
+	return(strcmp(s1, s2));
 #endif
 }
 
 //use pointer to avoid inlining of strncmp
-inline int DLLINTERNAL mm_strncmp(const char *s1, const char *s2, size_t n) {
+inline int DLLINTERNAL mm_strncmp(const char* s1, const char* s2, size_t n) {
 #if 0
 	int (*__strncmp)(const char*, const char*, size_t) = &strncmp;
 	return((*__strncmp)(s1, s2, n));
 #else
-	return(strncmp(s1,s2,n));
+	return(strncmp(s1, s2, n));
 #endif
 }
 
@@ -107,49 +107,49 @@ inline int DLLINTERNAL mm_strncmp(const char *s1, const char *s2, size_t n) {
 #endif
 
 // Technique 3: use inline
-inline char * DLLINTERNAL STRNCPY(char *dst, const char *src, int size) {
-	return(strncat(&(*dst = 0), src, size-1));
+inline char* DLLINTERNAL STRNCPY(char* dst, const char* src, int size) {
+	return(strncat(&(*dst = 0), src, size - 1));
 }
 
 // Renamed string functions to be clearer.
-inline int DLLINTERNAL strmatch(const char *s1, const char *s2) {
-	if(likely(s1) && likely(s2))
+inline int DLLINTERNAL strmatch(const char* s1, const char* s2) {
+	if (likely(s1) && likely(s2))
 		return(!mm_strcmp(s1, s2));
 	else
 		return(0);
 }
-inline int DLLINTERNAL strnmatch(const char *s1, const char *s2, size_t n) {
-	if(likely(s1) && likely(s2))
+inline int DLLINTERNAL strnmatch(const char* s1, const char* s2, size_t n) {
+	if (likely(s1) && likely(s2))
 		return(!mm_strncmp(s1, s2, n));
 	else
 		return(0);
 }
-inline int DLLINTERNAL strcasematch(const char *s1, const char *s2) {
-	if(likely(s1) && likely(s2))
+inline int DLLINTERNAL strcasematch(const char* s1, const char* s2) {
+	if (likely(s1) && likely(s2))
 		return(!strcasecmp(s1, s2));
 	else
 		return(0);
 }
-inline int DLLINTERNAL strncasematch(const char *s1, const char *s2, size_t n) {
-	if(likely(s1) && likely(s2))
+inline int DLLINTERNAL strncasematch(const char* s1, const char* s2, size_t n) {
+	if (likely(s1) && likely(s2))
 		return(!strncasecmp(s1, s2, n));
 	else
 		return(0);
 }
 
-inline int DLLINTERNAL old_valid_file(char *path) {
-	char *cp;
+inline int DLLINTERNAL old_valid_file(char* path) {
+	char* cp;
 	int len, ret;
-	cp = (char *)LOAD_FILE_FOR_ME(path, &len);
-	if(cp && len)
-		ret=1;
+	cp = (char*)LOAD_FILE_FOR_ME(path, &len);
+	if (cp && len)
+		ret = 1;
 	else
-		ret=0;
+		ret = 0;
 	FREE_FILE(cp);
 	return(ret);
 }
-int DLLINTERNAL valid_gamedir_file(const char *path);
-char * DLLINTERNAL full_gamedir_path(const char *path, char *fullpath);
+int DLLINTERNAL valid_gamedir_file(const char* path);
+char* DLLINTERNAL full_gamedir_path(const char* path, char* fullpath);
 
 // Turn a variable/function name into the corresponding string, optionally
 // stripping off the leading "len" characters.  Useful for things like
@@ -157,21 +157,16 @@ char * DLLINTERNAL full_gamedir_path(const char *path, char *fullpath);
 // specify strings used for all the debugging/log messages.
 #define STRINGIZE(name, len)		#name+len
 
-
 // Max description length for plugins.ini and other places.
 #define MAX_DESC_LEN 256
-
 
 // For various character string buffers.
 #define MAX_STRBUF_LEN 1024
 
-
 // Smallest of two
 #define MIN(x, y) (((x)<(y))?(x):(y))
 
-
 // Greatest of two
 #define MAX(x, y) (((x)>(y))?(x):(y))
-
 
 #endif /* SUPPORT_META_H */

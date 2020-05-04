@@ -39,7 +39,7 @@
 #include "api_info.h"		// me
 #include "api_hook.h"
 
-// trace flag, loglevel, name
+ // trace flag, loglevel, name
 const dllapi_info_t dllapi_info = {
 	{ mFALSE,  3,	api_caller_void_args_void, 	"GameDLLInit" },		// pfnGameInit
 	{ mFALSE,  10,	api_caller_int_args_p, 		"DispatchSpawn" },		// pfnSpawn

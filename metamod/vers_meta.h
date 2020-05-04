@@ -39,9 +39,8 @@
 #define VERS_META_H
 
 #ifndef OPT_TYPE
-	#define OPT_TYPE	"default"
+#define OPT_TYPE	"default"
 #endif /* not OPT_TYPE */
-
 
 #define VDATE 			"2020/03/30"
 #define VPATCH_COPYRIGHT_YEAR   "2020"
@@ -55,7 +54,5 @@
 
 #define VVERSION		VMETA_VERSION "p" VPATCH_VERSION
 #define RC_VERS_DWORD		1,21,0,VPATCH_IVERSION	// Version Windows DLL Resources in res_meta.rc
-
-
 
 #endif /* VERS_META_H */
