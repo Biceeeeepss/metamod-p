@@ -78,8 +78,8 @@ private:
 	mBOOL DLLINTERNAL set(option_t* setp, const char* value);
 	// Private; to satisfy -Weffc++ "has pointer data members but does
 	// not override" copy/assignment constructor.
-	void operator=(const MConfig& src);
-	MConfig(const MConfig& src);
+	void operator=(const MConfig& src) = delete;
+	MConfig(const MConfig& src) = delete;
 public:
 	// contructor
 	MConfig(void) DLLINTERNAL;

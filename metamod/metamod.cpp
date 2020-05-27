@@ -295,7 +295,6 @@ int DLLINTERNAL metamod_startup(void) {
 //  - ME_NULLRESULT	getcwd failed
 mBOOL DLLINTERNAL meta_init_gamedll(void) {
 	char gamedir[PATH_MAX];
-	char* cp;
 
 	memset(&GameDLL, 0, sizeof(GameDLL));
 
@@ -317,7 +316,7 @@ mBOOL DLLINTERNAL meta_init_gamedll(void) {
 		// our gamedir, and truncate to get the game name.
 		// (note check for both linux and win32 full pathname.)
 		STRNCPY(GameDLL.gamedir, gamedir, sizeof(GameDLL.gamedir));
-		cp = strrchr(gamedir, '/') + 1;
+		char* cp = strrchr(gamedir, '/') + 1;
 		STRNCPY(GameDLL.name, cp, sizeof(GameDLL.name));
 	}
 	else {

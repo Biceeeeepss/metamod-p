@@ -119,9 +119,6 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 
 int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 {
-	PIMAGE_DOS_HEADER pDosHeader;
-	PIMAGE_NT_HEADERS pNTHeader;
-	unsigned char* pBaseAddr;
 	const char* pName = "sw.dll";
 
 	if (!check_for_engine_module(pName)) {
@@ -138,16 +135,16 @@ int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 	// This is also the modules base address.
 	HMODULE hModule = GetModuleHandle(pName);
 
-	pBaseAddr = (unsigned char*)hModule;
+	unsigned char* pBaseAddr = (unsigned char*)hModule;
 
 	// Check if we find a DOS header
-	pDosHeader = (PIMAGE_DOS_HEADER)hModule;
+	PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)hModule;
 	if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE) {
 		return INVALID_DOS_SIGN;
 	}
 
 	// Check if we find a PE header
-	pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
+	PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
 	if (pNTHeader->Signature != IMAGE_NT_SIGNATURE) {
 		return INVALID_NT_SIGN;
 	}

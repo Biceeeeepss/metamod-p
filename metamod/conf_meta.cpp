@@ -53,9 +53,8 @@ MConfig::MConfig(void)
 // Initialize default values from the stored options struct.  Has to happen
 // _after_ constructor, so that all the fields are allocated (d'oh).
 void DLLINTERNAL MConfig::init(option_t* global_options) {
-	option_t* optp;
 	list = global_options;
-	for (optp = list; optp->name; optp++)
+	for (option_t* optp = list; optp->name; optp++)
 		set(optp, optp->init);
 }
 
@@ -70,8 +69,7 @@ option_t* DLLINTERNAL MConfig::find(const char* lookup) {
 }
 
 mBOOL DLLINTERNAL MConfig::set(const char* key, const char* value) {
-	option_t* optp;
-	optp = find(key);
+	option_t* optp = find(key);
 	if (optp)
 		return(set(optp, value));
 	else
@@ -147,18 +145,16 @@ mBOOL DLLINTERNAL MConfig::set(option_t* setp, const char* setstr) {
 }
 
 mBOOL DLLINTERNAL MConfig::load(const char* fn) {
-	FILE* fp;
 	char loadfile[PATH_MAX];
 	char line[MAX_CONF_LEN];
 	char* optname, * optval;
 	option_t* optp;
-	int ln;
 
 	// Make full pathname (from gamedir if relative, collapse "..",
 	// backslashes, etc).
 	full_gamedir_path(fn, loadfile);
 
-	fp = fopen(loadfile, "r");
+	FILE* fp = fopen(loadfile, "r");
 	if (!fp) {
 		META_WARNING("unable to open config file '%s': %s", loadfile,
 			strerror(errno));
@@ -166,7 +162,7 @@ mBOOL DLLINTERNAL MConfig::load(const char* fn) {
 	}
 
 	META_DEBUG(2, ("Loading from config file: %s", loadfile));
-	for (ln = 1; !feof(fp) && fgets(line, sizeof(line), fp); ln++) {
+	for (int ln = 1; !feof(fp) && fgets(line, sizeof(line), fp); ln++) {
 		if (line[0] == '#')
 			continue;
 		if (line[0] == ';')
@@ -202,12 +198,11 @@ mBOOL DLLINTERNAL MConfig::load(const char* fn) {
 }
 
 void DLLINTERNAL MConfig::show(void) {
-	option_t* optp;
 	if (filename)
 		META_CONS("%s and %s:", "Config options from localinfo", filename);
 	else
 		META_CONS("%s:", "Config options from localinfo");
-	for (optp = list; optp->name; optp++) {
+	for (option_t* optp = list; optp->name; optp++) {
 		int* optval = (int*)optp->dest;
 		char** optstr = (char**)optp->dest;
 		// cvar_t *optcvar = (cvar_t *) optp->dest;

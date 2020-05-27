@@ -73,17 +73,13 @@ inline const api_info_t* DLLINTERNAL get_api_info(enum_api_t api, unsigned int a
 
 // simplified 'void' version of main hook function
 void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_t api, unsigned int func_offset, const void* packed_args) {
-	const api_info_t* api_info;
 	int i;
-	META_RES mres, status, prev_mres;
 	MPlugin* iplug;
-	void* pfn_routine;
-	int loglevel;
 	const void* api_table;
 	meta_globals_t backup_meta_globals[1];
 
 	//passing offset from api wrapper function makes code faster/smaller
-	api_info = get_api_info(api, api_info_offset);
+	const api_info_t* api_info = get_api_info(api, api_info_offset);
 
 	//Fix bug with metamod-bot-plugins.
 	if (unlikely(call_count++ > 0)) {
@@ -92,11 +88,11 @@ void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_
 	}
 
 	//Setup
-	loglevel = api_info->loglevel;
-	mres = MRES_UNSET;
-	status = MRES_UNSET;
-	prev_mres = MRES_UNSET;
-	pfn_routine = NULL;
+	int loglevel = api_info->loglevel;
+	META_RES mres = MRES_UNSET;
+	META_RES status = MRES_UNSET;
+	META_RES prev_mres = MRES_UNSET;
+	void* pfn_routine = NULL;
 
 	//Pre plugin functions
 	prev_mres = MRES_UNSET;

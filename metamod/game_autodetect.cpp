@@ -48,7 +48,6 @@ const char* DLLINTERNAL autodetect_gamedll(const gamedll_t* gamedll, const char*
 	char fnpath[256];
 	DIR* dir;
 	struct dirent* ent;
-	unsigned int fn_len;
 
 	// Generate dllpath
 	safevoid_snprintf(buf, sizeof(buf), "%s/dlls", gamedll->gamedir);
@@ -75,7 +74,7 @@ const char* DLLINTERNAL autodetect_gamedll(const gamedll_t* gamedll, const char*
 	}
 
 	while ((ent = readdir(dir)) != 0) {
-		fn_len = strlen(ent->d_name);
+		unsigned int fn_len = strlen(ent->d_name);
 
 		if (fn_len <= strlen(PLATFORM_DLEXT)) {
 			// Filename is too short

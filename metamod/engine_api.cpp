@@ -453,12 +453,11 @@ static void* mm_GetModelPtr(edict_t * pEdict) {
 }
 
 static int mm_RegUserMsg(const char* pszName, int iSize) {
-	int imsgid;
 	MRegMsg* nmsg = NULL;
 	META_ENGINE_HANDLE(int, 0, FN_REGUSERMSG, pfnRegUserMsg, pi, (pszName, iSize));
 	// Expand the macro, since we need to do extra work.
 	/// RETURN_API(int)
-	imsgid = GET_RET_CLASS(ret_val, int);
+	int imsgid = GET_RET_CLASS(ret_val, int);
 
 	// Add the msgid, name, and size to our saved list, if we haven't
 	// already.

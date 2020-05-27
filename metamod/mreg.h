@@ -95,8 +95,8 @@ private:
 	int endlist;			// index of last used entry
 	// Private; to satisfy -Weffc++ "has pointer data members but does
 	// not override" copy/assignment constructor.
-	void operator=(const MRegCmdList& src);
-	MRegCmdList(const MRegCmdList& src);
+	void operator=(const MRegCmdList& src) = delete;
+	MRegCmdList(const MRegCmdList& src) = delete;
 
 public:
 	// constructor:
@@ -134,8 +134,8 @@ private:
 	int endlist;			// index of last used entry
 	// Private; to satisfy -Weffc++ "has pointer data members but does
 	// not override" copy/assignment constructor.
-	void operator=(const MRegCvarList& src);
-	MRegCvarList(const MRegCvarList& src);
+	void operator=(const MRegCvarList& src) = delete;
+	MRegCvarList(const MRegCvarList& src) = delete;
 
 public:
 	// constructor:

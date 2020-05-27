@@ -80,8 +80,7 @@ void DLLINTERNAL meta_register_cmdcvar() {
 
 // Parse "meta" console command.
 void DLLHIDDEN svr_meta(void) {
-	const char* cmd;
-	cmd = CMD_ARGV(1);
+	const char* cmd = CMD_ARGV(1);
 	// arguments: none
 	if (!strcasecmp(cmd, "version"))
 		cmd_meta_version();
@@ -137,8 +136,7 @@ void DLLHIDDEN svr_meta(void) {
 
 // Parse "meta" client command.
 void DLLINTERNAL client_meta(edict_t* pEntity) {
-	const char* cmd;
-	cmd = CMD_ARGV(1);
+	const char* cmd = CMD_ARGV(1);
 	META_LOG("ClientCommand 'meta %s' from player '%s'",
 		CMD_ARGS(), STRING(pEntity->v.netname));
 	// arguments: none
@@ -342,9 +340,7 @@ void DLLINTERNAL cmd_meta_config(void) {
 
 // "meta load" console command.
 void DLLINTERNAL cmd_meta_load(void) {
-	int argc;
-	const char* args;
-	argc = CMD_ARGC();
+	int argc = CMD_ARGC();
 	if (argc < 3) {
 		META_CONS("usage: meta load <name> [<description>]");
 		META_CONS("   where <name> is an identifier used to locate the plugin file.");
@@ -360,6 +356,8 @@ void DLLINTERNAL cmd_meta_load(void) {
 		META_CONS("      name_x86_64.so");
 #else
 		META_CONS("      name_i386.so");
+		META_CONS("      name_i486.so");
+		META_CONS("      name_i586.so");
 		META_CONS("      name_i686.so");
 #endif
 #elif defined(_WIN32)
@@ -373,19 +371,18 @@ void DLLINTERNAL cmd_meta_load(void) {
 		META_CONS("      <given path, if absolute>");
 		return;
 	}
-	args = CMD_ARGS();
+	const char* args = CMD_ARGS();
 	// cmd_addload() handles all the feedback to the console..
 	Plugins->cmd_addload(args);
 }
 
 // Handle various console commands that refer to a known/loaded plugin.
 void DLLINTERNAL cmd_doplug(PLUG_CMD pcmd) {
-	int i = 0, argc;
-	const char* cmd, * arg;
+	int i = 0;
 	MPlugin* findp;
 
-	argc = CMD_ARGC();
-	cmd = CMD_ARGV(1);
+	int argc = CMD_ARGC();
+	const char* cmd = CMD_ARGV(1);
 	if (argc < 3) {
 		META_CONS("usage: meta %s <plugin> [<plugin> ...]", cmd);
 		META_CONS("   where <plugin> can be either the plugin index #");
@@ -394,13 +391,12 @@ void DLLINTERNAL cmd_doplug(PLUG_CMD pcmd) {
 	}
 	// i=2 to skip first arg, as that's the "cmd"
 	for (i = 2; i < argc; i++) {
-		int pindex;
 		char* endptr;
 
-		arg = CMD_ARGV(i);
+		const char* arg = CMD_ARGV(i);
 
 		// try to match plugin id first
-		pindex = strtol(arg, &endptr, 10);
+		int pindex = strtol(arg, &endptr, 10);
 		if (*arg && !*endptr)
 			findp = Plugins->find(pindex);
 		// else try to match some string (prefix)

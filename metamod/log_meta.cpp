@@ -62,12 +62,11 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 void DLLINTERNAL META_CONS(const char* fmt, ...) {
 	va_list ap;
 	char buf[MAX_LOGMSG_LEN];
-	unsigned int len;
 
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	len = strlen(buf);
+	unsigned int len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -82,10 +81,9 @@ void DLLINTERNAL META_CONS(const char* fmt, ...) {
 static const char* const prefixDEV = "[META] dev:";
 void DLLINTERNAL META_DEV(const char* fmt, ...) {
 	va_list ap;
-	int dev;
 
 	if (NULL != g_engfuncs.pfnCVarGetFloat) {
-		dev = (int)CVAR_GET_FLOAT("developer");
+		int dev = (int)CVAR_GET_FLOAT("developer");
 		if (dev == 0) return;
 	}
 
@@ -138,12 +136,11 @@ void DLLINTERNAL META_LOG(const char* fmt, ...) {
 void DLLINTERNAL META_CLIENT(edict_t* pEntity, const char* fmt, ...) {
 	va_list ap;
 	char buf[MAX_CLIENTMSG_LEN];
-	unsigned int len;
 
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	len = strlen(buf);
+	unsigned int len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -189,7 +186,6 @@ static BufferedMessage* messageQueueEnd = NULL;
 
 static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* prefix, const char* fmt, va_list ap) {
 	char buf[MAX_LOGMSG_LEN];
-	BufferedMessage* msg;
 
 	if (NULL != g_engfuncs.pfnAlertMessage) {
 		vsnprintf(buf, sizeof(buf), fmt, ap);
@@ -198,7 +194,7 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 	}
 
 	// Engine AlertMessage function not available. Buffer message.
-	msg = new BufferedMessage;
+	BufferedMessage* msg = new BufferedMessage;
 	if (NULL == msg) {
 		// though luck, gonna lose this message
 		return;
