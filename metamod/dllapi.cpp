@@ -271,8 +271,8 @@ static int mm_AddToFullPack(struct entity_state_s* state, int e, edict_t* ent, e
 	META_DLLAPI_HANDLE(int, 0, FN_ADDTOFULLPACK, pfnAddToFullPack, pi2p2ip, (state, e, ent, host, hostflags, player, pSet));
 	RETURN_API(int);
 }
-static void mm_CreateBaseline(int player, int eindex, struct entity_state_s* baseline, struct edict_s* entity, int playermodelindex, vec3_t player_mins, vec3_t player_maxs) {
-	META_DLLAPI_HANDLE_void(FN_CREATEBASELINE, pfnCreateBaseline, 2i2pi2p, (player, eindex, baseline, entity, playermodelindex, (float*)player_mins, (float*)player_maxs));
+static void mm_CreateBaseline(int player, int eindex, struct entity_state_s *baseline, struct edict_s *entity, int playermodelindex, Vector player_mins, Vector player_maxs) {
+	META_DLLAPI_HANDLE_void(FN_CREATEBASELINE, pfnCreateBaseline, 2i2pi2v3, (player, eindex, baseline, entity, playermodelindex, player_mins, player_maxs));
 	RETURN_API_void();
 }
 static void mm_RegisterEncoders(void) {
