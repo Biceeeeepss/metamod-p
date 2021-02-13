@@ -708,11 +708,11 @@ static void mm_PlaybackEvent(int flags, const edict_t * pInvoker, unsigned short
 }
 
 static unsigned char* mm_SetFatPVS(float* org) {
-	META_ENGINE_HANDLE(unsigned char*, 0, FN_SETFATPVS, pfnSetFatPVS, p, (org));
+	META_ENGINE_HANDLE(unsigned char*, nullptr, FN_SETFATPVS, pfnSetFatPVS, p, (org));
 	RETURN_API(unsigned char*)
 }
 static unsigned char* mm_SetFatPAS(float* org) {
-	META_ENGINE_HANDLE(unsigned char*, 0, FN_SETFATPAS, pfnSetFatPAS, p, (org));
+	META_ENGINE_HANDLE(unsigned char*, nullptr, FN_SETFATPAS, pfnSetFatPAS, p, (org));
 	RETURN_API(unsigned char*)
 }
 
@@ -873,7 +873,7 @@ static void mm_QueryClientCvarValue(const edict_t * player, const char* cvarName
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnQueryClientCvarValue &&
 		!IS_VALID_PTR((void*)g_engfuncs.pfnQueryClientCvarValue)) {
-		g_engfuncs.pfnQueryClientCvarValue = NULL;
+		g_engfuncs.pfnQueryClientCvarValue = nullptr;
 		s_check = mTRUE;
 	}
 
@@ -888,7 +888,7 @@ static void mm_QueryClientCvarValue2(const edict_t * player, const char* cvarNam
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnQueryClientCvarValue2 &&
 		!IS_VALID_PTR((void*)g_engfuncs.pfnQueryClientCvarValue2)) {
-		g_engfuncs.pfnQueryClientCvarValue2 = NULL;
+		g_engfuncs.pfnQueryClientCvarValue2 = nullptr;
 		s_check = mTRUE;
 	}
 
@@ -903,7 +903,7 @@ static int mm_EngCheckParm(const char* pchCmdLineToken, char** pchNextVal) {
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnEngCheckParm &&
 		!IS_VALID_PTR((void*)g_engfuncs.pfnEngCheckParm)) {
-		g_engfuncs.pfnEngCheckParm = NULL;
+		g_engfuncs.pfnEngCheckParm = nullptr;
 		s_check = mTRUE;
 	}
 

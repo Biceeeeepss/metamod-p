@@ -78,7 +78,7 @@ void DLLINTERNAL META_UTIL_HudMessage(edict_t* pEntity, const hudtextparms_t& te
 	if (fast_FNullEnt(pEntity) || pEntity->free)
 		return;
 
-	MESSAGE_BEGIN(MSG_ONE, SVC_TEMPENTITY, NULL, pEntity);
+	MESSAGE_BEGIN(MSG_ONE, SVC_TEMPENTITY, nullptr, pEntity);
 	WRITE_BYTE(TE_TEXTMESSAGE);
 	WRITE_BYTE(textparms.channel & 0xFF);
 

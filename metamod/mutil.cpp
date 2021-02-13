@@ -178,8 +178,7 @@ static int mutil_GetUserMsgID(plid_t plid, const char* msgname, int* size) {
 			*size = umsg->size;
 		return(umsg->msgid);
 	}
-	else
-		return(0);
+	return(0);
 }
 
 // Find a usermsg, registered by the gamedll, with the corresponding
@@ -220,8 +219,7 @@ static const char* mutil_GetUserMsgName(plid_t plid, int msgid, int* size) {
 		// gamedll.
 		return(umsg->name);
 	}
-	else
-		return(NULL);
+	return(nullptr);
 }
 
 // Return the full path of the plugin's loaded dll/so file.
@@ -232,7 +230,7 @@ static const char* mutil_GetPluginPath(plid_t plid) {
 	if (!plug) {
 		META_WARNING("GetPluginPath: couldn't find plugin '%s'",
 			plid->name);
-		return(NULL);
+		return(nullptr);
 	}
 	STRNCPY(buf, plug->pathname, sizeof(buf));
 	return(buf);
@@ -264,7 +262,7 @@ static const char* mutil_GetGameInfo(plid_t plid, ginfo_t type) {
 	default:
 		META_WARNING("GetGameInfo: invalid request '%d' from plugin '%s'",
 			type, plid->name);
-		return(NULL);
+		return(nullptr);
 	}
 	STRNCPY(buf, cp, sizeof(buf));
 	return(buf);
@@ -274,29 +272,27 @@ static int mutil_LoadMetaPlugin(plid_t plid, const char* fname, PLUG_LOADTIME no
 {
 	MPlugin* pl_loaded;
 
-	if (NULL == fname) {
+	if (nullptr == fname) {
 		return(ME_ARGUMENT);
 	}
 
 	meta_errno = ME_NOERROR;
 	if (!(pl_loaded = Plugins->plugin_addload(plid, fname, now))) {
 		if (plugin_handle)
-			*plugin_handle = NULL;
+			*plugin_handle = nullptr;
 		return(meta_errno);
 	}
-	else {
-		if (plugin_handle)
-			*plugin_handle = (void*)pl_loaded->handle;
-		return(0);
-	}
+	if (plugin_handle)
+		*plugin_handle = (void*)pl_loaded->handle;
+	return(0);
 }
 
 static int mutil_UnloadMetaPlugin(plid_t plid, const char* fname, PLUG_LOADTIME now, PL_UNLOAD_REASON reason)
 {
-	MPlugin* findp = NULL;
+	MPlugin* findp = nullptr;
 	char* endptr;
 
-	if (NULL == fname) {
+	if (nullptr == fname) {
 		return(ME_ARGUMENT);
 	}
 
@@ -321,7 +317,7 @@ static int mutil_UnloadMetaPluginByHandle(plid_t plid, void* plugin_handle, PLUG
 {
 	MPlugin* findp;
 
-	if (NULL == plugin_handle) {
+	if (nullptr == plugin_handle) {
 		return(ME_ARGUMENT);
 	}
 

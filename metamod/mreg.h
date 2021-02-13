@@ -103,11 +103,11 @@ public:
 	MRegCmdList(void) DLLINTERNAL;
 
 	// functions:
-	MRegCmd* DLLINTERNAL find(const char* findname);	// find by MRegCmd->name
+	MRegCmd* DLLINTERNAL find(const char* findname) const;	// find by MRegCmd->name
 	MRegCmd* DLLINTERNAL add(const char* addname);
-	void DLLINTERNAL disable(int plugin_id);		// change status to Invalid
-	void DLLINTERNAL show(void);			// list all funcs to console
-	void DLLINTERNAL show(int plugin_id);		// list given plugin's funcs to console
+	void DLLINTERNAL disable(int plugin_id) const;		// change status to Invalid
+	void DLLINTERNAL show(void) const;			// list all funcs to console
+	void DLLINTERNAL show(int plugin_id) const;		// list given plugin's funcs to console
 };
 
 // An individual registered cvar.
@@ -122,7 +122,7 @@ public:
 	REG_STATUS status;			// whether corresponding plugin is loaded
 // functions:
 	void DLLINTERNAL init(int idx);		// init values, as not using constructors
-	mBOOL DLLINTERNAL set(cvar_t* src);
+	mBOOL DLLINTERNAL set(cvar_t* src) const;
 };
 
 // A list of registered cvars.
@@ -143,10 +143,10 @@ public:
 
 	// functions:
 	MRegCvar* DLLINTERNAL add(const char* addname);
-	MRegCvar* DLLINTERNAL find(const char* findname);	// find by MRegCvar->data.name
-	void DLLINTERNAL disable(int plugin_id);		// change status to Invalid
-	void DLLINTERNAL show(void);			// list all cvars to console
-	void DLLINTERNAL show(int plugin_id);		// list given plugin's cvars to console
+	MRegCvar* DLLINTERNAL find(const char* findname) const;	// find by MRegCvar->data.name
+	void DLLINTERNAL disable(int plugin_id) const;		// change status to Invalid
+	void DLLINTERNAL show(void) const;			// list all cvars to console
+	void DLLINTERNAL show(int plugin_id) const;		// list given plugin's cvars to console
 };
 
 // An individual registered user msg, from gamedll.

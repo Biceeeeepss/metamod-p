@@ -343,7 +343,7 @@ struct meta_enginefuncs_t : public enginefuncs_t {
 	void DLLINTERNAL set_from(enginefuncs_t* pFuncs);
 
 	// Copy the pointers from this object to an enginefuncs_t struct.
-	void DLLINTERNAL copy_to(enginefuncs_t* pFuncs);
+	void DLLINTERNAL copy_to(enginefuncs_t* pFuncs) const;
 
 	// return the engine interface version
 	static int DLLINTERNAL version(void);
@@ -399,7 +399,7 @@ inline void meta_enginefuncs_t::set_from(enginefuncs_t* _pFuncs)
 	memcpy(this, _pFuncs, sizeof(enginefuncs_t));
 }
 
-inline void meta_enginefuncs_t::copy_to(enginefuncs_t* _pFuncs)
+inline void meta_enginefuncs_t::copy_to(enginefuncs_t* _pFuncs) const
 {
 	memcpy(_pFuncs, this, sizeof(enginefuncs_t));
 }

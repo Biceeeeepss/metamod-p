@@ -62,12 +62,12 @@ static IMAGE_NT_HEADERS* DLLINTERNAL_NOVIS get_ntheaders(void* mapview) {
 	//Check if valid dos header
 	mem.mem = (unsigned long)mapview;
 	if (IsBadReadPtr(mem.dos, sizeof(*mem.dos)) || mem.dos->e_magic != IMAGE_DOS_SIGNATURE)
-		return(0);
+		return(nullptr);
 
 	//Get and check pe header
 	mem.mem = rva_to_va(mapview, mem.dos->e_lfanew);
 	if (IsBadReadPtr(mem.pe, sizeof(*mem.pe)) || mem.pe->Signature != IMAGE_NT_SIGNATURE)
-		return(0);
+		return(nullptr);
 
 	return(mem.pe);
 }
@@ -86,11 +86,11 @@ static IMAGE_EXPORT_DIRECTORY* DLLINTERNAL_NOVIS get_export_table(void* mapview,
 
 	//Check for exports
 	if (!mem.pe->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress)
-		return(0);
+		return(nullptr);
 
 	mem.mem = va_to_mapaddr(mapview, sections, num_sects, mem.pe->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 	if (IsBadReadPtr(mem.export_dir, sizeof(*mem.export_dir)))
-		return(0);
+		return(nullptr);
 
 	return(mem.export_dir);
 }
@@ -101,15 +101,15 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 	int has_GetEntityAPI = 0;
 
 	// Try open file for read
-	HANDLE hFile = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
-	                           NULL);
+	HANDLE hFile = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
+	                           nullptr);
 	if (is_invalid_handle(hFile)) {
 		META_DEBUG(3, ("is_gamedll(%s): CreateFile() failed.", filename));
 		return(mFALSE);
 	}
 
 	//
-	HANDLE hMap = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+	HANDLE hMap = CreateFileMapping(hFile, nullptr, PAGE_READONLY, 0, 0, nullptr);
 	if (is_invalid_handle(hMap)) {
 		META_DEBUG(3, ("is_gamedll(%s): CreateFileMapping() failed.", filename));
 		CloseHandle(hFile);
@@ -211,9 +211,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 
 		return(mTRUE);
 	}
-	else {
-		META_DEBUG(5, ("is_gamedll(%s): Library isn't GameDLL.", filename));
+	META_DEBUG(5, ("is_gamedll(%s): Library isn't GameDLL.", filename));
 
-		return(mFALSE);
-	}
+	return(mFALSE);
 }

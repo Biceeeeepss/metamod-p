@@ -45,7 +45,7 @@
 #include "osdep.h"				// win32 vsnprintf, etc
 #include "support_meta.h"		// MAX
 
-cvar_t meta_debug = { "meta_debug", "0", FCVAR_EXTDLL, 0, NULL };
+cvar_t meta_debug = { "meta_debug", "0", FCVAR_EXTDLL, 0, nullptr };
 
 int meta_debug_value = 0; //meta_debug_value is converted from float(meta_debug.value) to int on every frame
 
@@ -82,7 +82,7 @@ static const char* const prefixDEV = "[META] dev:";
 void DLLINTERNAL META_DEV(const char* fmt, ...) {
 	va_list ap;
 
-	if (NULL != g_engfuncs.pfnCVarGetFloat) {
+	if (nullptr != g_engfuncs.pfnCVarGetFloat) {
 		const int dev = (int)CVAR_GET_FLOAT("developer");
 		if (dev == 0) return;
 	}
@@ -181,13 +181,13 @@ public:
 	BufferedMessage* next;
 };
 
-static BufferedMessage* messageQueueStart = NULL;
-static BufferedMessage* messageQueueEnd = NULL;
+static BufferedMessage* messageQueueStart = nullptr;
+static BufferedMessage* messageQueueEnd = nullptr;
 
 static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* prefix, const char* fmt, va_list ap) {
 	char buf[MAX_LOGMSG_LEN];
 
-	if (NULL != g_engfuncs.pfnAlertMessage) {
+	if (nullptr != g_engfuncs.pfnAlertMessage) {
 		vsnprintf(buf, sizeof(buf), fmt, ap);
 		ALERT(atype, "%s %s\n", prefix, buf);
 		return;
@@ -195,7 +195,7 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 
 	// Engine AlertMessage function not available. Buffer message.
 	BufferedMessage* msg = new BufferedMessage;
-	if (NULL == msg) {
+	if (nullptr == msg) {
 		// though luck, gonna lose this message
 		return;
 	}
@@ -203,9 +203,9 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 	msg->atype = atype;
 	msg->prefix = prefix;
 	vsnprintf(msg->buf, sizeof(buf), fmt, ap);
-	msg->next = NULL;
+	msg->next = nullptr;
 
-	if (NULL == messageQueueEnd) {
+	if (nullptr == messageQueueEnd) {
 		messageQueueStart = messageQueueEnd = msg;
 	}
 	else {
@@ -221,7 +221,7 @@ void DLLINTERNAL flush_ALERT_buffer(void) {
 	BufferedMessage* msg = messageQueueStart;
 	const int dev = (int)CVAR_GET_FLOAT("developer");
 
-	while (NULL != msg) {
+	while (nullptr != msg) {
 		if (msg->service == mlsDEV && dev == 0) {
 			;
 		}
@@ -233,5 +233,5 @@ void DLLINTERNAL flush_ALERT_buffer(void) {
 		msg = messageQueueStart;
 	}
 
-	messageQueueStart = messageQueueEnd = NULL;
+	messageQueueStart = messageQueueEnd = nullptr;
 }

@@ -69,12 +69,12 @@ static IMAGE_NT_HEADERS* DLLINTERNAL_NOVIS get_ntheaders(HMODULE module)
 	//Check if valid dos header
 	mem.mem = (unsigned long)module;
 	if (IsBadReadPtr(mem.dos, sizeof(*mem.dos)) || mem.dos->e_magic != IMAGE_DOS_SIGNATURE)
-		return(0);
+		return(nullptr);
 
 	//Get and check pe header
 	mem.mem = rva_to_va(module, mem.dos->e_lfanew);
 	if (IsBadReadPtr(mem.pe, sizeof(*mem.pe)) || mem.pe->Signature != IMAGE_NT_SIGNATURE)
-		return(0);
+		return(nullptr);
 
 	return(mem.pe);
 }
@@ -95,15 +95,15 @@ static IMAGE_EXPORT_DIRECTORY* DLLINTERNAL_NOVIS get_export_table(HMODULE module
 	//Check module
 	mem.pe = get_ntheaders(module);
 	if (!mem.pe)
-		return(0);
+		return(nullptr);
 
 	//Check for exports
 	if (!mem.pe->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress)
-		return(0);
+		return(nullptr);
 
 	mem.mem = rva_to_va(module, mem.pe->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 	if (IsBadReadPtr(mem.export_dir, sizeof(*mem.export_dir)))
-		return(0);
+		return(nullptr);
 
 	return(mem.export_dir);
 }
@@ -192,8 +192,8 @@ static int DLLINTERNAL_NOVIS combine_module_export_tables(HMODULE moduleMM, HMOD
 	qsort(newSort, newNumberOfNames, sizeof(*newSort), (int(*)(const void*, const void*)) & sort_names_list);
 
 	//make newNames and newNameOrdinals lists (VirtualAlloc so we dont waste heap memory to stuff that isn't freed)
-	*(void**)&newNames = VirtualAlloc(0, newNumberOfNames * sizeof(*newNames), MEM_COMMIT, PAGE_READWRITE);
-	*(void**)&newNameOrdinals = VirtualAlloc(0, newNumberOfNames * sizeof(*newNameOrdinals), MEM_COMMIT, PAGE_READWRITE);
+	*(void**)&newNames = VirtualAlloc(nullptr, newNumberOfNames * sizeof(*newNames), MEM_COMMIT, PAGE_READWRITE);
+	*(void**)&newNameOrdinals = VirtualAlloc(nullptr, newNumberOfNames * sizeof(*newNameOrdinals), MEM_COMMIT, PAGE_READWRITE);
 
 	for (i = 0; i < newNumberOfNames; i++)
 	{

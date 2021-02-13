@@ -115,26 +115,22 @@ inline char* DLLINTERNAL STRNCPY(char* dst, const char* src, int size) {
 inline int DLLINTERNAL strmatch(const char* s1, const char* s2) {
 	if (likely(s1) && likely(s2))
 		return(!mm_strcmp(s1, s2));
-	else
-		return(0);
+	return(0);
 }
 inline int DLLINTERNAL strnmatch(const char* s1, const char* s2, size_t n) {
 	if (likely(s1) && likely(s2))
 		return(!mm_strncmp(s1, s2, n));
-	else
-		return(0);
+	return(0);
 }
 inline int DLLINTERNAL strcasematch(const char* s1, const char* s2) {
 	if (likely(s1) && likely(s2))
 		return(!strcasecmp(s1, s2));
-	else
-		return(0);
+	return(0);
 }
 inline int DLLINTERNAL strncasematch(const char* s1, const char* s2, size_t n) {
 	if (likely(s1) && likely(s2))
 		return(!strncasecmp(s1, s2, n));
-	else
-		return(0);
+	return(0);
 }
 
 inline int DLLINTERNAL old_valid_file(char* path) {

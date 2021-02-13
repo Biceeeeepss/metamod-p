@@ -431,7 +431,7 @@ C_DLLEXPORT int GetEntityAPI(DLL_FUNCTIONS* pFunctionTable, int interfaceVersion
 		META_WARNING("GetEntityAPI called with null pFunctionTable");
 		return(FALSE);
 	}
-	else if (interfaceVersion != INTERFACE_VERSION) {
+	if (interfaceVersion != INTERFACE_VERSION) {
 		META_WARNING("GetEntityAPI version mismatch; requested=%d ours=%d", interfaceVersion, INTERFACE_VERSION);
 		return(FALSE);
 	}
@@ -446,7 +446,7 @@ C_DLLEXPORT int GetEntityAPI2(DLL_FUNCTIONS* pFunctionTable, int* interfaceVersi
 		META_WARNING("GetEntityAPI2 called with null pFunctionTable");
 		return(FALSE);
 	}
-	else if (*interfaceVersion != INTERFACE_VERSION) {
+	if (*interfaceVersion != INTERFACE_VERSION) {
 		META_WARNING("GetEntityAPI2 version mismatch; requested=%d ours=%d", *interfaceVersion, INTERFACE_VERSION);
 		//! Tell engine what version we had, so it can figure out who is out of date.
 		*interfaceVersion = INTERFACE_VERSION;
@@ -494,7 +494,7 @@ C_DLLEXPORT int GetNewDLLFunctions(NEW_DLL_FUNCTIONS* pNewFunctionTable, int* in
 		META_ERROR("GetNewDLLFunctions called with null pNewFunctionTable");
 		return(FALSE);
 	}
-	else if (*interfaceVersion != NEW_DLL_FUNCTIONS_VERSION) {
+	if (*interfaceVersion != NEW_DLL_FUNCTIONS_VERSION) {
 		META_ERROR("GetNewDLLFunctions version mismatch; requested=%d ours=%d", *interfaceVersion, NEW_DLL_FUNCTIONS_VERSION);
 		//! Tell engine what version we had, so it can figure out who is out of date.
 		*interfaceVersion = NEW_DLL_FUNCTIONS_VERSION;

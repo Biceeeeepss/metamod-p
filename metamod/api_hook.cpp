@@ -91,7 +91,7 @@ void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_
 	const int loglevel = api_info->loglevel;
 	META_RES mres = MRES_UNSET;
 	META_RES status = MRES_UNSET;
-	void* pfn_routine = NULL;
+	void* pfn_routine = nullptr;
 
 	//Pre plugin functions
 	META_RES prev_mres = MRES_UNSET;
@@ -251,7 +251,7 @@ void* DLLINTERNAL main_hook_function(const class_ret_t ret_init,
 	mres = MRES_UNSET;
 	status = MRES_UNSET;
 	prev_mres = MRES_UNSET;
-	pfn_routine = NULL;
+	pfn_routine = nullptr;
 
 	//Pre plugin functions
 	prev_mres = MRES_UNSET;
@@ -409,10 +409,8 @@ void* DLLINTERNAL main_hook_function(const class_ret_t ret_init,
 	if (likely(status != MRES_OVERRIDE)) {
 		return(*(void**)orig_ret.getptr());
 	}
-	else {
-		META_DEBUG(loglevel, ("Returning (override) %s()", api_info->name));
-		return(*(void**)override_ret.getptr());
-	}
+	META_DEBUG(loglevel, ("Returning (override) %s()", api_info->name));
+	return(*(void**)override_ret.getptr());
 }
 
 //

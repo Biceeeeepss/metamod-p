@@ -87,8 +87,7 @@ MPlugin* DLLINTERNAL MPluginList::find(int pindex) {
 	MPlugin* pfound = &plist[pindex - 1];
 	if (pfound->status < PL_VALID)
 		RETURN_ERRNO(NULL, ME_NOTFOUND);
-	else
-		return(pfound);
+	return(pfound);
 }
 
 // Find a plugin based on the plugin handle.
@@ -121,7 +120,8 @@ void DLLINTERNAL MPluginList::clear_source_plugin_index(int source_index) {
 }
 
 // Find if any plugin has been loaded by plugin 'source_index'
-mBOOL DLLINTERNAL MPluginList::found_child_plugins(int source_index) {
+mBOOL DLLINTERNAL MPluginList::found_child_plugins(int source_index) const
+{
 	if (source_index <= 0)
 		return(mFALSE);
 
@@ -232,7 +232,7 @@ MPlugin* DLLINTERNAL MPluginList::find_match(const char* prefix) {
 
 	if (!prefix)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	MPlugin* pfound = NULL;
+	MPlugin* pfound = nullptr;
 	const int len = strlen(prefix);
 	safevoid_snprintf(buf, sizeof(buf), "mm_%s", prefix);
 	for (int i = 0; i < endlist; i++) {
@@ -245,25 +245,25 @@ MPlugin* DLLINTERNAL MPluginList::find_match(const char* prefix) {
 			pfound = iplug;
 			continue;
 		}
-		else if (strncasecmp(iplug->desc, prefix, len) == 0) {
+		if (strncasecmp(iplug->desc, prefix, len) == 0) {
 			if (pfound)
 				RETURN_ERRNO(NULL, ME_NOTUNIQ);
 			pfound = iplug;
 			continue;
 		}
-		else if (strncasecmp(iplug->file, prefix, len) == 0) {
+		if (strncasecmp(iplug->file, prefix, len) == 0) {
 			if (pfound)
 				RETURN_ERRNO(NULL, ME_NOTUNIQ);
 			pfound = iplug;
 			continue;
 		}
-		else if (strncasecmp(iplug->file, buf, strlen(buf)) == 0) {
+		if (strncasecmp(iplug->file, buf, strlen(buf)) == 0) {
 			if (pfound)
 				RETURN_ERRNO(NULL, ME_NOTUNIQ);
 			pfound = iplug;
 			continue;
 		}
-		else if (iplug->info
+		if (iplug->info
 			&& strncasecmp(iplug->info->logtag, prefix, len) == 0)
 		{
 			if (pfound)
@@ -287,7 +287,7 @@ MPlugin* DLLINTERNAL MPluginList::find_match(const char* prefix) {
 MPlugin* DLLINTERNAL MPluginList::find_match(MPlugin* pmatch) {
 	if (!pmatch)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	MPlugin* pfound = NULL;
+	MPlugin* pfound = nullptr;
 	for (int i = 0; i < endlist; i++) {
 		MPlugin* iplug = &plist[i];
 		if (pmatch->platform_match(iplug)) {
@@ -390,7 +390,7 @@ mBOOL DLLINTERNAL MPluginList::ini_startup() {
 		}
 		// Check for a matching platform with different platform specifics
 		// level.
-		if (NULL != (pmatch = find_match(&plist[n]))) {
+		if (nullptr != (pmatch = find_match(&plist[n]))) {
 			if (pmatch->pfspecific >= plist[n].pfspecific) {
 				META_DEBUG(1, ("ini: Skipping plugin, line %d of %s: plugin with higher platform specific level already exists. (%d >= %d)",
 					ln, inifile, pmatch->pfspecific, plist[n].pfspecific));
@@ -454,7 +454,7 @@ mBOOL DLLINTERNAL MPluginList::ini_refresh() {
 		if (!(pl_found = find(pl_temp.pathname))) {
 			// Check for a matching platform with higher platform specifics
 			// level.
-			if (NULL != (pl_found = find_match(&pl_temp))) {
+			if (nullptr != (pl_found = find_match(&pl_temp))) {
 				if (pl_found->pfspecific >= pl_temp.pfspecific) {
 					META_DEBUG(1, ("ini: Skipping plugin, line %d of %s: plugin with higher platform specific level already exists. (%d >= %d)",
 						ln, inifile, pl_found->pfspecific, pl_temp.pfspecific));
@@ -496,11 +496,9 @@ mBOOL DLLINTERNAL MPluginList::ini_refresh() {
 						pl_found->pathname, strerror(errno));
 					continue;
 				}
-				else {
-					// File hasn't been updated.
-					// Keep plugin (don't let refresh() unload it).
-					pl_found->action = PA_KEEP;
-				}
+				// File hasn't been updated.
+				// Keep plugin (don't let refresh() unload it).
+				pl_found->action = PA_KEEP;
 			}
 			// Newer file on disk.
 			else if (pl_found->status >= PL_OPENED) {
@@ -511,7 +509,7 @@ mBOOL DLLINTERNAL MPluginList::ini_refresh() {
 				META_WARNING("ini: Plugin '%s' has newer file, but unexpected status (%s)",
 					pl_found->desc, pl_found->str_status());
 		}
-		if (NULL != pl_found) {
+		if (nullptr != pl_found) {
 			META_LOG("ini: Read plugin config for: %s", pl_found->desc);
 		}
 		else {
@@ -575,7 +573,7 @@ MPlugin* DLLINTERNAL MPluginList::plugin_addload(plid_t plid, const char* fname,
 	if (!(pl_added = add(&pl_temp))) {
 		META_DEBUG(1, ("Couldn't add plugin '%s' to list; see log", pl_temp.desc));
 		// meta_errno should be already set in add()
-		return(NULL);
+		return(nullptr);
 	}
 
 	// try to load new plugin (setting 'must load now')
@@ -592,7 +590,7 @@ MPlugin* DLLINTERNAL MPluginList::plugin_addload(plid_t plid, const char* fname,
 		else
 			META_DEBUG(1, ("Couldn't load plugin '%s'; see log", pl_added->desc));
 		// meta_errno should be already set in load()
-		return(NULL);
+		return(nullptr);
 	}
 	META_DEBUG(1, ("Loaded plugin '%s' successfully", pl_added->desc));
 	meta_errno = ME_NOERROR;

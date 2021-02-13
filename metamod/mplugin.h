@@ -153,9 +153,9 @@ public:
 	mBOOL DLLINTERNAL check_input(void);
 
 	mBOOL DLLINTERNAL resolve(void);				// find a matching file on disk
-	char* DLLINTERNAL resolve_dirs(const char* path);
-	char* DLLINTERNAL resolve_prefix(const char* path);
-	char* DLLINTERNAL resolve_suffix(const char* path);
+	char* DLLINTERNAL resolve_dirs(const char* path) const;
+	char* DLLINTERNAL resolve_prefix(const char* path) const;
+	char* DLLINTERNAL resolve_suffix(const char* path) const;
 	static mBOOL DLLINTERNAL is_platform_postfix(const char* pf);
 
 	mBOOL DLLINTERNAL platform_match(MPlugin* plugin);
@@ -166,35 +166,39 @@ public:
 	mBOOL DLLINTERNAL pause(void);
 	mBOOL DLLINTERNAL unpause(void);
 	mBOOL DLLINTERNAL retry(PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // if previously failed
-	void DLLINTERNAL free_api_pointers(void);
+	void DLLINTERNAL free_api_pointers(void) const;
 	mBOOL DLLINTERNAL clear(void);
 	mBOOL DLLINTERNAL plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLOAD_REASON reason); // other plugin unloading
 	void DLLINTERNAL show(void);				// print info about plugin to console
 
-	mBOOL DLLINTERNAL newer_file(void);			// check for newer file on disk
+	mBOOL DLLINTERNAL newer_file(void) const;			// check for newer file on disk
 
 // output string functions
-	const char* DLLINTERNAL str_status(STR_STATUS fmt);
-	const char* DLLINTERNAL str_action(STR_ACTION fmt);
-	const char* DLLINTERNAL str_source(STR_SOURCE fmt);
+	const char* DLLINTERNAL str_status(STR_STATUS fmt) const;
+	const char* DLLINTERNAL str_action(STR_ACTION fmt) const;
+	const char* DLLINTERNAL str_source(STR_SOURCE fmt) const;
 
-	const char* DLLINTERNAL str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason);
+	const char* DLLINTERNAL str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason) const;
 	static const char* DLLINTERNAL str_loadtime(PLUG_LOADTIME pallow, STR_LOADTIME fmt);
 
-	inline const char* DLLINTERNAL str_status(void) { return(str_status(ST_SIMPLE)); };
-	inline const char* DLLINTERNAL str_action(void) { return(str_action(SA_SIMPLE)); };
-	inline const char* DLLINTERNAL str_source(void) { return(str_source(SO_SIMPLE)); };
+	inline const char* DLLINTERNAL str_status(void) const { return(str_status(ST_SIMPLE)); };
+	inline const char* DLLINTERNAL str_action(void) const { return(str_action(SA_SIMPLE)); };
+	inline const char* DLLINTERNAL str_source(void) const { return(str_source(SO_SIMPLE)); };
 
-	inline const char* DLLINTERNAL str_loadable(void) {
+	inline const char* DLLINTERNAL str_loadable(void) const
+	{
 		return(info ? str_loadtime(info->loadable, SL_SIMPLE) : " -");
 	};
-	inline const char* DLLINTERNAL str_unloadable(void) {
+	inline const char* DLLINTERNAL str_unloadable(void) const
+	{
 		return(info ? str_loadtime(info->unloadable, SL_SIMPLE) : " -");
 	};
-	inline const char* DLLINTERNAL str_loadable(STR_LOADTIME fmt) {
+	inline const char* DLLINTERNAL str_loadable(STR_LOADTIME fmt) const
+	{
 		return(info ? str_loadtime(info->loadable, fmt) : " -");
 	};
-	inline const char* DLLINTERNAL str_unloadable(STR_LOADTIME fmt) {
+	inline const char* DLLINTERNAL str_unloadable(STR_LOADTIME fmt) const
+	{
 		return(info ? str_loadtime(info->unloadable, fmt) : " -");
 	};
 private:

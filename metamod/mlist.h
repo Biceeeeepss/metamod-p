@@ -72,7 +72,7 @@ public:
 	MPlugin* DLLINTERNAL find_match(MPlugin* pmatch);	// find by platform_match()
 	MPlugin* DLLINTERNAL add(MPlugin* padd);
 
-	mBOOL DLLINTERNAL found_child_plugins(int source_index);
+	mBOOL DLLINTERNAL found_child_plugins(int source_index) const;
 	void DLLINTERNAL clear_source_plugin_index(int source_index);
 	void DLLINTERNAL trim_list(void);
 

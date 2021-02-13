@@ -45,8 +45,8 @@
 #include "osdep.h"			// strtok,
 
 MConfig::MConfig(void)
-	: list(NULL), filename(NULL), debuglevel(0), gamedll(NULL),
-	plugins_file(NULL), exec_cfg(NULL)
+	: list(nullptr), filename(nullptr), debuglevel(0), gamedll(nullptr),
+	plugins_file(nullptr), exec_cfg(nullptr)
 {
 }
 
@@ -65,16 +65,15 @@ option_t* DLLINTERNAL MConfig::find(const char* lookup) const
 	for (optp = list; optp->name && !strmatch(optp->name, lookup); optp++);
 	if (optp->name)
 		return(optp);
-	else
-		RETURN_ERRNO(NULL, ME_NOTFOUND);
+	RETURN_ERRNO(NULL, ME_NOTFOUND);
 }
 
-mBOOL DLLINTERNAL MConfig::set(const char* key, const char* value) {
+mBOOL DLLINTERNAL MConfig::set(const char* key, const char* value) const
+{
 	option_t* optp = find(key);
 	if (optp)
 		return(set(optp, value));
-	else
-		RETURN_ERRNO(mFALSE, ME_NOTFOUND);
+	RETURN_ERRNO(mFALSE, ME_NOTFOUND);
 }
 
 mBOOL DLLINTERNAL MConfig::set(option_t* setp, const char* setstr) {
@@ -175,7 +174,7 @@ mBOOL DLLINTERNAL MConfig::load(const char* fn) {
 				loadfile, ln);
 			continue;
 		}
-		if (!(optval = strtok(NULL, "\r\n"))) {
+		if (!(optval = strtok(nullptr, "\r\n"))) {
 			META_WARNING("'%s' line %d: bad config format: missing value",
 				loadfile, ln);
 			continue;

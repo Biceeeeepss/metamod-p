@@ -89,8 +89,7 @@ int DLLINTERNAL valid_gamedir_file(const char* path) {
 
 	if (ret == 0 && reg && size)
 		return(TRUE);
-	else
-		return(FALSE);
+	return(FALSE);
 }
 
 // Turns path into a full path:

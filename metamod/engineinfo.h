@@ -106,14 +106,14 @@ public:
 	EngineInfo& operator=(const EngineInfo&) DLLINTERNAL;
 	EngineInfo(const EngineInfo&) DLLINTERNAL;
 
-	const char* DLLINTERNAL type(void);
+	const char* DLLINTERNAL type(void) const;
 
 	// Initilaise object, determining the bounds of the code segment of
 	// the HL engine shared object.
-	int DLLINTERNAL initialise(enginefuncs_t* pFuncs = NULL);
+	int DLLINTERNAL initialise(enginefuncs_t* pFuncs = nullptr);
 
 	// Test if pMem is within bounds of the code segment.
-	bool DLLINTERNAL is_valid_code_pointer(void* pMem);
+	bool DLLINTERNAL is_valid_code_pointer(void* pMem) const;
 
 	// Overloaded versions of above test to keep the ugly pointer
 	// conversion stuff in here.
@@ -136,8 +136,8 @@ public:
 // We probably should run an initialisation here without a reference
 // pointer so that the object has valid info in any case.
 inline EngineInfo::EngineInfo() :
-	m_codeStart(NULL),
-	m_codeEnd(NULL),
+	m_codeStart(nullptr),
+	m_codeEnd(nullptr),
 	m_state(STATE_NULL)
 {
 	m_type[0] = '\0';
@@ -160,17 +160,17 @@ inline EngineInfo& EngineInfo::operator=(const EngineInfo& _rhs)
 	return *this;
 }
 
-inline const char* EngineInfo::type(void)
+inline const char* EngineInfo::type(void) const
 {
 	return m_type;
 }
 
-inline bool EngineInfo::is_valid_code_pointer(void* _pMem)
+inline bool EngineInfo::is_valid_code_pointer(void* _pMem) const
 {
 	if (STATE_INVALID == m_state) {
 		return c_DefaultReturnOnInvalidState;
 	}
-	if (NULL != _pMem && m_codeStart <= _pMem && _pMem <= m_codeEnd) {
+	if (nullptr != _pMem && m_codeStart <= _pMem && _pMem <= m_codeEnd) {
 		return true;
 	}
 

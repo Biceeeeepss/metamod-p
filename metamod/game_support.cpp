@@ -57,14 +57,16 @@ const game_modlist_t known_games = {
 	//
 #include "games.h"
 	// End of list terminator:
-	{NULL, NULL, NULL, NULL}
+	{nullptr, nullptr, nullptr, nullptr}
 };
 
 // Find a modinfo corresponding to the given game name.
 const game_modinfo_t* DLLINTERNAL lookup_game(const char* name) {
+	const game_modinfo_t* imod;
 	char check_path[NAME_MAX];
-	for (int i = 0; known_games[i].name; i++) {
-		const game_modinfo_t* imod = &known_games[i];
+	int i;
+	for (i = 0; known_games[i].name; i++) {
+		imod = &known_games[i];
 		// If there are 2 or more same names check next dll file if doesn't exist
 		if (strcasematch(imod->name, name)) {
 			safevoid_snprintf(check_path, sizeof(check_path), "dlls/%s",
@@ -82,12 +84,13 @@ const game_modinfo_t* DLLINTERNAL lookup_game(const char* name) {
 		}
 	}
 	// no match found
-	return(NULL);
+	return(nullptr);
 }
 
 // Installs gamedll from Steam cache
 mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 	int length_in;
+	int length_out;
 
 	if (!from)
 		return mFALSE;
@@ -98,7 +101,7 @@ mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 
 	// If the file seems to exist in the cache.
 	if (cachefile) {
-		const int fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		int fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 
 		if (fd < 0) {
 			META_DEBUG(3, ("Installing gamedll from cache: Failed to create file %s: %s", to, strerror(errno)));
@@ -106,7 +109,7 @@ mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 			return(mFALSE);
 		}
 
-		int length_out = write(fd, cachefile, length_in);
+		length_out = write(fd, cachefile, length_in);
 		FREE_FILE(cachefile);
 		close(fd);
 
@@ -144,13 +147,14 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 	static char autodetect_desc_buf[NAME_MAX]; // pointer is given outside function
 	char install_path[NAME_MAX];
 	const game_modinfo_t* known;
-	
+
 #ifdef _WIN32
+	char* cp;
 #elif defined(linux)
-	char* cp, *strippedfn;
+	char* cp, * strippedfn;
 #endif
-	
-	const char* autofn = 0, * knownfn = 0, * usedfn = 0;
+
+	const char* autofn = nullptr, * knownfn = nullptr, * usedfn = nullptr;
 	int override = 0;
 
 	// Check for old-style "metagame.ini" file and complain.
@@ -238,7 +242,7 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 #endif /* linux */
 			// If no file to be used was found, try the old known DLL file
 			// name.
-			if (0 == usedfn) {
+			if (nullptr == usedfn) {
 				META_DEBUG(4, ("Checking for old version game DLL name '%s'.\n", knownfn));
 				safevoid_snprintf(gamedll->pathname, sizeof(gamedll->pathname), "dlls/%s", knownfn);
 				// Check if the gamedll file exists. If not, try to install it from
@@ -301,7 +305,7 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 	}
 
 	// get filename from pathname
-	char* cp = strrchr(gamedll->pathname, '/');
+	cp = strrchr(gamedll->pathname, '/');
 	if (cp)
 		cp++;
 	else

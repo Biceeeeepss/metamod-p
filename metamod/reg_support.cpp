@@ -118,7 +118,7 @@ void DLLHIDDEN meta_command_handler(void) {
 // string.  The function pointer handed to the engine is actually a pointer
 // to a generic command-handler function (see above).
 void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
-	MPlugin* iplug = NULL;
+	MPlugin* iplug = nullptr;
 
 	META_DEBUG(4, ("called: meta_AddServerCommand; cmd_name=%s, function=%d", cmd_name, function));
 
@@ -165,7 +165,7 @@ void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
 // code tries to _directly_ read/set the fields of its own cvar structures,
 // it will fail to work properly.
 void DLLHIDDEN meta_CVarRegister(cvar_t* pCvar) {
-	MPlugin* iplug = NULL;
+	MPlugin* iplug = nullptr;
 
 	META_DEBUG(4, ("called: meta_CVarRegister; name=%s", pCvar->name));
 

@@ -546,46 +546,46 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// Test every pointer that is part of the signature if it is a valid
 	// pointer. If it is not, we set it explicitly to NULL.
 	if (!Engine.info.is_valid_code_pointer(pfnGetPlayerAuthId)) {
-		pfnGetPlayerAuthId = NULL;
+		pfnGetPlayerAuthId = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnSequenceGet)) {
-		pfnSequenceGet = NULL;
+		pfnSequenceGet = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnSequencePickSentence)) {
-		pfnSequencePickSentence = NULL;
+		pfnSequencePickSentence = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnGetFileSize)) {
-		pfnGetFileSize = NULL;
+		pfnGetFileSize = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnGetApproxWavePlayLen)) {
-		pfnGetApproxWavePlayLen = NULL;
+		pfnGetApproxWavePlayLen = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnIsCareerMatch)) {
-		pfnIsCareerMatch = NULL;
+		pfnIsCareerMatch = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnGetLocalizedStringLength)) {
-		pfnGetLocalizedStringLength = NULL;
+		pfnGetLocalizedStringLength = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnRegisterTutorMessageShown)) {
-		pfnRegisterTutorMessageShown = NULL;
+		pfnRegisterTutorMessageShown = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnGetTimesTutorMessageShown)) {
-		pfnGetTimesTutorMessageShown = NULL;
+		pfnGetTimesTutorMessageShown = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnProcessTutorMessageDecayBuffer)) {
-		pfnProcessTutorMessageDecayBuffer = NULL;
+		pfnProcessTutorMessageDecayBuffer = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnConstructTutorMessageDecayBuffer)) {
-		pfnConstructTutorMessageDecayBuffer = NULL;
+		pfnConstructTutorMessageDecayBuffer = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnResetTutorMessageDecayData)) {
-		pfnResetTutorMessageDecayData = NULL;
+		pfnResetTutorMessageDecayData = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnQueryClientCvarValue)) {
-		pfnQueryClientCvarValue = NULL;
+		pfnQueryClientCvarValue = nullptr;
 	}
 	if (!Engine.info.is_valid_code_pointer(pfnQueryClientCvarValue2)) {
-		pfnQueryClientCvarValue2 = NULL;
+		pfnQueryClientCvarValue2 = nullptr;
 	}
 
 	// Now begins our heuristic, where we try to determine the engine
@@ -601,7 +601,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// This may give incorrect results for *really* old engine versions,
 	// i.e. pre 1.1.0.8. We live with that risk. No one uses them anymore.
 	// Really.
-	if (pfnGetPlayerAuthId == NULL) {
+	if (pfnGetPlayerAuthId == nullptr) {
 		return;
 	}
 	sm_version = 144;
@@ -613,7 +613,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 
 	// If pfnGetFileSize() is present, it is at least 147,
 	// otherwise leave it at the so far determined value.
-	if (pfnGetFileSize == NULL) {
+	if (pfnGetFileSize == nullptr) {
 		return;
 	}
 	sm_version = 147;
@@ -628,14 +628,14 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// (Yes, I know this could be done with a little hacky for() loop. We
 	// don't need to do hacky here.)
 	int cntInvals = 0;
-	if (pfnGetApproxWavePlayLen == NULL) cntInvals++;
-	if (pfnIsCareerMatch == NULL) cntInvals++;
-	if (pfnGetLocalizedStringLength == NULL) cntInvals++;
-	if (pfnRegisterTutorMessageShown == NULL) cntInvals++;
-	if (pfnGetTimesTutorMessageShown == NULL) cntInvals++;
-	if (pfnProcessTutorMessageDecayBuffer == NULL) cntInvals++;
-	if (pfnConstructTutorMessageDecayBuffer == NULL) cntInvals++;
-	if (pfnResetTutorMessageDecayData == NULL) cntInvals++;
+	if (pfnGetApproxWavePlayLen == nullptr) cntInvals++;
+	if (pfnIsCareerMatch == nullptr) cntInvals++;
+	if (pfnGetLocalizedStringLength == nullptr) cntInvals++;
+	if (pfnRegisterTutorMessageShown == nullptr) cntInvals++;
+	if (pfnGetTimesTutorMessageShown == nullptr) cntInvals++;
+	if (pfnProcessTutorMessageDecayBuffer == nullptr) cntInvals++;
+	if (pfnConstructTutorMessageDecayBuffer == nullptr) cntInvals++;
+	if (pfnResetTutorMessageDecayData == nullptr) cntInvals++;
 
 	if (cntInvals > 0) {
 		return;
@@ -645,7 +645,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// All functions up to QueryClientCvarValue() are valid.
 	// If QueryClientCvarValue() is not valid, leave it at the so far
 	// determined version. Otherwise the version is at least 156.
-	if (pfnQueryClientCvarValue == NULL) {
+	if (pfnQueryClientCvarValue == nullptr) {
 		return;
 	}
 	sm_version = 156;
@@ -653,7 +653,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// All functions up to QueryClientCvarValue2() are valid.
 	// If QueryClientCvarValue2() is not valid, leave it at the so far
 	// determined version.  Otherwise the version is at least 157.
-	if (pfnQueryClientCvarValue2 == NULL) {
+	if (pfnQueryClientCvarValue2 == nullptr) {
 		return;
 	}
 	sm_version = 157;
@@ -661,7 +661,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// All functions up to EngCheckParm() are valid.
 	// If EngCheckParm() is not valid, leave it at the so far determined
 	// version. Otherwise the version is at least 158.
-	if (pfnEngCheckParm == NULL) {
+	if (pfnEngCheckParm == nullptr) {
 		return;
 	}
 	sm_version = 158;
@@ -676,25 +676,25 @@ void HL_enginefuncs_t::fixup_engine_interface(void)
 
 	switch (version()) {
 	case 138:
-		pfnGetPlayerAuthId = NULL;
+		pfnGetPlayerAuthId = nullptr;
 	case 144:
-		pfnSequenceGet = NULL;
-		pfnSequencePickSentence = NULL;
-		pfnGetFileSize = NULL;
+		pfnSequenceGet = nullptr;
+		pfnSequencePickSentence = nullptr;
+		pfnGetFileSize = nullptr;
 	case 147:
-		pfnGetApproxWavePlayLen = NULL;
-		pfnIsCareerMatch = NULL;
-		pfnGetLocalizedStringLength = NULL;
-		pfnRegisterTutorMessageShown = NULL;
-		pfnGetTimesTutorMessageShown = NULL;
-		pfnProcessTutorMessageDecayBuffer = NULL;
-		pfnConstructTutorMessageDecayBuffer = NULL;
-		pfnResetTutorMessageDecayData = NULL;
+		pfnGetApproxWavePlayLen = nullptr;
+		pfnIsCareerMatch = nullptr;
+		pfnGetLocalizedStringLength = nullptr;
+		pfnRegisterTutorMessageShown = nullptr;
+		pfnGetTimesTutorMessageShown = nullptr;
+		pfnProcessTutorMessageDecayBuffer = nullptr;
+		pfnConstructTutorMessageDecayBuffer = nullptr;
+		pfnResetTutorMessageDecayData = nullptr;
 	case 155:
-		pfnQueryClientCvarValue = NULL;
+		pfnQueryClientCvarValue = nullptr;
 	case 156:
-		pfnQueryClientCvarValue2 = NULL;
+		pfnQueryClientCvarValue2 = nullptr;
 	case 157:
-		pfnEngCheckParm = NULL;
+		pfnEngCheckParm = nullptr;
 	}
 }

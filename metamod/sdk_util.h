@@ -95,12 +95,12 @@ inline void DLLINTERNAL SET_SERVERINFO(char* key, char* value) {
 
 // Get a "localinfo" value.
 inline char* DLLINTERNAL LOCALINFO(char* key) {
-	return(ENTITY_KEYVALUE(NULL, key));
+	return(ENTITY_KEYVALUE(nullptr, key));
 }
 
 // Set a "localinfo" value.
 inline void DLLINTERNAL SET_LOCALINFO(char* key, char* value) {
-	SET_SERVER_KEYVALUE(GET_INFOKEYBUFFER(NULL), key, value);
+	SET_SERVER_KEYVALUE(GET_INFOKEYBUFFER(nullptr), key, value);
 }
 
 inline int DLLINTERNAL fast_FNullEnt(const edict_t* pent) {

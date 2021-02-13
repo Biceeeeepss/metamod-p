@@ -46,7 +46,7 @@
  // Constructor
 MPlayer::MPlayer()
 	: isQueried(mFALSE),
-	cvarName(NULL)
+	cvarName(nullptr)
 {
 }
 
@@ -62,7 +62,7 @@ MPlayer::~MPlayer()
 // Copy constructor
 MPlayer::MPlayer(const MPlayer& rhs)
 	: isQueried(rhs.isQueried),
-	cvarName(NULL)
+	cvarName(nullptr)
 {
 	if (rhs.cvarName) {
 		cvarName = strdup(rhs.cvarName);
@@ -79,7 +79,7 @@ MPlayer& DLLINTERNAL MPlayer::operator=(const MPlayer& rhs)
 		free(cvarName);
 	}
 
-	cvarName = NULL;
+	cvarName = nullptr;
 
 	if (rhs.cvarName) {
 		cvarName = strdup(rhs.cvarName);
@@ -116,20 +116,20 @@ void DLLINTERNAL MPlayer::clear_cvar_query(const char* /*cvar*/)
 	isQueried = mFALSE;
 	if (cvarName) {
 		free(cvarName);
-		cvarName = NULL;
+		cvarName = nullptr;
 	}
 }
 
 // Check if a client cvar is queried for this player
 // Returns NULL if not
 // or the name of the cvar.
-const char* DLLINTERNAL MPlayer::is_querying_cvar(void)
+const char* DLLINTERNAL MPlayer::is_querying_cvar(void) const
 {
 	if (isQueried) {
 		return(cvarName);
 	}
 
-	return(NULL);
+	return(nullptr);
 }
 
 // Mark a player as querying a client cvar and stores the cvar name

@@ -38,7 +38,7 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 	const char* pC;
 	size_t size;
 
-	if (NULL == _pName) return false;
+	if (nullptr == _pName) return false;
 
 #ifdef _WIN32
 
@@ -52,7 +52,7 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 	}
 
 	const HMODULE hModule = GetModuleHandle(pC);
-	if (NULL == hModule) {
+	if (nullptr == hModule) {
 		return false;
 	}
 
@@ -155,7 +155,7 @@ int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 
 int DLLINTERNAL EngineInfo::vac_pe_approx(enginefuncs_t* _pFuncs)
 {
-	if (NULL == _pFuncs) return INVALID_ARG;
+	if (nullptr == _pFuncs) return INVALID_ARG;
 
 	// There is really no good and easy way to do this. Right now what
 	// we do is assume that Steam listenservers will normally be
@@ -318,7 +318,7 @@ int DLLINTERNAL EngineInfo::initialise(enginefuncs_t* _pFuncs)
 	int ret = 0;
 
 	// Have to do this only once.
-	if (NULL != m_codeStart) {
+	if (nullptr != m_codeStart) {
 		return 0;
 	}
 

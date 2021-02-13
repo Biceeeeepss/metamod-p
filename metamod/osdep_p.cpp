@@ -59,7 +59,7 @@ DIR* DLLINTERNAL my_opendir(const char* path)
 	dir->handle = FindFirstFileA(search_path, &dir->find_data);
 	if (dir->handle == INVALID_HANDLE_VALUE) {
 		free(dir);
-		return(0);
+		return(nullptr);
 	}
 
 	// Found file
@@ -72,7 +72,7 @@ struct dirent* DLLINTERNAL my_readdir(DIR* dir)
 {
 	// If not found stop
 	if (!dir || dir->not_found)
-		return(0);
+		return(nullptr);
 
 	// Set filename
 	STRNCPY(dir->ent.d_name, dir->find_data.cFileName, sizeof(dir->ent.d_name));
@@ -111,11 +111,11 @@ DLHANDLE DLLINTERNAL get_module_handle_of_memptr(void* memptr)
 	MEMORY_BASIC_INFORMATION MBI;
 
 	if (!VirtualQuery(memptr, &MBI, sizeof(MBI)))
-		return(NULL);
+		return(nullptr);
 	if (MBI.State != MEM_COMMIT)
-		return(NULL);
+		return(nullptr);
 	if (!MBI.AllocationBase)
-		return(NULL);
+		return(nullptr);
 
 	return((DLHANDLE)MBI.AllocationBase);
 }

@@ -307,7 +307,8 @@ mBOOL DLLINTERNAL MPlugin::resolve(void) {
 //     GAMEDIR/dlls/filename
 // meta_errno values:
 //  - none
-char* DLLINTERNAL MPlugin::resolve_dirs(const char* path) {
+char* DLLINTERNAL MPlugin::resolve_dirs(const char* path) const
+{
 	struct stat st;
 	static char buf[PATH_MAX];
 	char* found;
@@ -328,7 +329,7 @@ char* DLLINTERNAL MPlugin::resolve_dirs(const char* path) {
 	if ((found = resolve_prefix(buf)))
 		return(found);
 
-	return(NULL);
+	return(nullptr);
 }
 
 // For the given path, tries several possible filename prefixes.
@@ -337,7 +338,8 @@ char* DLLINTERNAL MPlugin::resolve_dirs(const char* path) {
 //     dir/file
 // meta_errno values:
 //  - none
-char* DLLINTERNAL MPlugin::resolve_prefix(const char* path) {
+char* DLLINTERNAL MPlugin::resolve_prefix(const char* path) const
+{
 	struct stat st;
 	char dname[PATH_MAX];
 	static char buf[PATH_MAX];
@@ -367,7 +369,7 @@ char* DLLINTERNAL MPlugin::resolve_prefix(const char* path) {
 	if ((found = resolve_suffix(path)))
 		return(found);
 
-	return(NULL);
+	return(nullptr);
 }
 
 // For the given path, tries several different filename suffixes.
@@ -379,7 +381,8 @@ char* DLLINTERNAL MPlugin::resolve_prefix(const char* path) {
 //     path_i386.so, path_i486.so, etc (if linux)
 // meta_errno values:
 //  - none
-char* DLLINTERNAL MPlugin::resolve_suffix(const char* path) {
+char* DLLINTERNAL MPlugin::resolve_suffix(const char* path) const
+{
 	struct stat st;
 	static char buf[PATH_MAX];
 	static char tmpbuf[PATH_MAX];
@@ -439,7 +442,7 @@ char* DLLINTERNAL MPlugin::resolve_suffix(const char* path) {
 #endif /* !__x86_64__ */
 #endif /* linux */
 
-	return(NULL);
+	return(nullptr);
 }
 
 // Check if a passed string starts with a known platform postfix.
@@ -455,7 +458,7 @@ mBOOL DLLINTERNAL MPlugin::is_platform_postfix(const char* pf) {
 		{"_i586.", 6},
 		{"_x86_64.", 8},
 		{"_x86-64.", 8},
-		{0,0},
+		{nullptr,0},
 	};
 
 	if (!pf)
@@ -496,14 +499,14 @@ mBOOL DLLINTERNAL MPlugin::platform_match(MPlugin* other) {
 		return(mTRUE);
 
 	char* end = strrchr(file, '_');
-	if (end == NULL || !is_platform_postfix(end))
+	if (end == nullptr || !is_platform_postfix(end))
 		end = strrchr(file, '.');
 
 	char* other_end = strrchr(other->file, '_');
-	if (other_end == NULL || !is_platform_postfix(other_end))
+	if (other_end == nullptr || !is_platform_postfix(other_end))
 		other_end = strrchr(other->file, '.');
 
-	if (end == NULL || other_end == NULL)
+	if (end == nullptr || other_end == nullptr)
 		return(mFALSE);
 
 	const int prefixlen = end - file;
@@ -551,10 +554,10 @@ mBOOL DLLINTERNAL MPlugin::load(PLUG_LOADTIME now) {
 						file, DLERROR());
 				}
 				else
-					handle = NULL;
+					handle = nullptr;
 			}
 			status = PL_BADFILE;
-			info = NULL; // prevent crash
+			info = nullptr; // prevent crash
 			// meta_errno should be already set in query()
 			return(mFALSE);
 		}
@@ -569,13 +572,11 @@ mBOOL DLLINTERNAL MPlugin::load(PLUG_LOADTIME now) {
 				desc, str_loadable(), str_loadtime(now, SL_SIMPLE)));
 			RETURN_ERRNO(mFALSE, ME_DELAYED);
 		}
-		else {
-			META_DEBUG(2, ("dll: Failed load plugin '%s'; can't attach now: allowed=%s; now=%s",
-				desc, str_loadable(), str_loadtime(now, SL_SIMPLE)));
-			// don't try to attach again later
-			action = PA_NONE;
-			RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
-		}
+		META_DEBUG(2, ("dll: Failed load plugin '%s'; can't attach now: allowed=%s; now=%s",
+			           desc, str_loadable(), str_loadtime(now, SL_SIMPLE)));
+		// don't try to attach again later
+		action = PA_NONE;
+		RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
 	}
 
 	// attach plugin; get function tables
@@ -597,7 +598,7 @@ mBOOL DLLINTERNAL MPlugin::load(PLUG_LOADTIME now) {
 	// If not loading at server startup, then need to call plugin's
 	// GameInit, since we've passed that.
 	if (now != PT_STARTUP) {
-		FN_GAMEINIT pfn_gameinit = NULL;
+		FN_GAMEINIT pfn_gameinit = nullptr;
 		if (tables.dllapi && (pfn_gameinit = tables.dllapi->pfnGameInit))
 			pfn_gameinit();
 	}
@@ -688,7 +689,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// Call plugin's Meta_Query(), to pass our meta interface version, and get
 	// plugin's info structure.
 	meta_errno = ME_NOERROR;
-	info = NULL;
+	info = nullptr;
 	// Make a copy of the meta_util function table for each plugin, for the
 	// same reason.
 	memcpy(&mutil_funcs, &MetaUtilFunctions, sizeof(mutil_funcs));
@@ -744,7 +745,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 		// caller will dlclose()
 		return(mFALSE);
 	}
-	else if (meta_errno != ME_NOERROR) {
+	if (meta_errno != ME_NOERROR) {
 		// some other error, already logged
 		return(mFALSE);
 	}
@@ -762,7 +763,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// Give plugin the p-series extension function table.
 	// Check for version differences!
 	//
-	if (NULL != (pfn_give_pext_funcs = (META_GIVE_PEXT_FUNCTIONS_FN)DLSYM(handle, "Meta_PExtGiveFnptrs"))) {
+	if (nullptr != (pfn_give_pext_funcs = (META_GIVE_PEXT_FUNCTIONS_FN)DLSYM(handle, "Meta_PExtGiveFnptrs"))) {
 		const int plugin_pext_version = (*pfn_give_pext_funcs)(
 			META_PEXT_VERSION, (pextension_funcs_t*)(&(mutil_funcs.pfnLoadPlugin)));
 
@@ -927,7 +928,7 @@ mBOOL DLLINTERNAL MPlugin::attach(PLUG_LOADTIME now) {
 		META_LOG("dll: Plugin '%s' isn't catching _any_ functions ??", desc);
 	}
 
-	time_loaded = time(NULL);
+	time_loaded = time(nullptr);
 	return(mTRUE);
 }
 
@@ -943,18 +944,16 @@ mBOOL DLLINTERNAL MPlugin::plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLO
 		RETURN_ERRNO(mFALSE, ME_BADREQ);
 	}
 	// self check. Do not allow plugin to unload itself!
-	else if (pl_unloader->index == index) {
+	if (pl_unloader->index == index) {
 		META_WARNING("dll: Not unloading plugin '%s'; Plugin tried to unload itself.", desc);
 		RETURN_ERRNO(mFALSE, ME_UNLOAD_SELF);
 	}
-	// safe check. Do not allow active unloader to be unloaded!
-	else if (is_unloader) {
+		// safe check. Do not allow active unloader to be unloaded!
+	if (is_unloader) {
 		META_WARNING("dll: Not unloading plugin '%s'; Plugin is unloading plugin that tried to unload it.", desc);
 		RETURN_ERRNO(mFALSE, ME_UNLOAD_UNLOADER);
 	}
-	else {
-		unloader_index = pl_unloader->index;
-	}
+	unloader_index = pl_unloader->index;
 
 	// block unloader from being unloaded by other plugin
 	pl_unloader->is_unloader = mTRUE;
@@ -1017,12 +1016,10 @@ mBOOL DLLINTERNAL MPlugin::unload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason, PL
 				// try to unload again at next opportunity
 				RETURN_ERRNO(mFALSE, ME_DELAYED);
 			}
-			else {
-				META_DEBUG(2, ("dll: Failed unload plugin '%s'; can't detach now: allowed=%s; now=%s", desc, str_unloadable(), str_loadtime(now, SL_SIMPLE)));
-				// don't try to unload again later
-				action = PA_NONE;
-				RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
-			}
+			META_DEBUG(2, ("dll: Failed unload plugin '%s'; can't detach now: allowed=%s; now=%s", desc, str_unloadable(), str_loadtime(now, SL_SIMPLE)));
+			// don't try to unload again later
+			action = PA_NONE;
+			RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
 		}
 	}
 
@@ -1063,7 +1060,7 @@ mBOOL DLLINTERNAL MPlugin::unload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason, PL
 		// So we don't return here but instead remove plugin from our listings.
 		META_WARNING("dll: Couldn't dlclose plugin file '%s': %s", file, DLERROR());
 	}
-	handle = NULL;
+	handle = nullptr;
 
 	if (action == PA_UNLOAD) {
 		status = PL_EMPTY;
@@ -1128,12 +1125,10 @@ mBOOL DLLINTERNAL MPlugin::reload(PLUG_LOADTIME now, PL_UNLOAD_REASON reason) {
 			// try to reload again at next opportunity
 			RETURN_ERRNO(mFALSE, ME_DELAYED);
 		}
-		else {
-			META_DEBUG(2, ("dll: Failed reload plugin '%s'; would not be able to reattach now: allowed=%s; now=%s", desc, str_loadable(), str_loadtime(now, SL_SIMPLE)));
-			// don't try to reload again later
-			action = PA_NONE;
-			RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
-		}
+		META_DEBUG(2, ("dll: Failed reload plugin '%s'; would not be able to reattach now: allowed=%s; now=%s", desc, str_loadable(), str_loadtime(now, SL_SIMPLE)));
+		// don't try to reload again later
+		action = PA_NONE;
+		RETURN_ERRNO(mFALSE, ME_NOTALLOWED);
 	}
 
 	//this is to fix unloading
@@ -1203,20 +1198,19 @@ mBOOL DLLINTERNAL MPlugin::unpause(void) {
 mBOOL DLLINTERNAL MPlugin::retry(PLUG_LOADTIME now, PL_UNLOAD_REASON reason) {
 	if (action == PA_LOAD)
 		return(load(now));
-	else if (action == PA_ATTACH)
+	if (action == PA_ATTACH)
 		return(load(now));
-	else if (action == PA_UNLOAD)
+	if (action == PA_UNLOAD)
 		return(unload(now, reason, reason));
-	else if (action == PA_RELOAD)
+	if (action == PA_RELOAD)
 		return(reload(now, reason));
-	else {
-		META_WARNING("No pending action to retry for plugin '%s'; (status=%s, action=%s)", desc, str_status(), str_action());
-		RETURN_ERRNO(mFALSE, ME_BADREQ);
-	}
+	META_WARNING("No pending action to retry for plugin '%s'; (status=%s, action=%s)", desc, str_status(), str_action());
+	RETURN_ERRNO(mFALSE, ME_BADREQ);
 }
 
 //
-void DLLINTERNAL MPlugin::free_api_pointers(void) {
+void DLLINTERNAL MPlugin::free_api_pointers(void) const
+{
 	if (gamedll_funcs.dllapi_table)
 		free(gamedll_funcs.dllapi_table);
 	if (gamedll_funcs.newapi_table)
@@ -1254,17 +1248,17 @@ mBOOL DLLINTERNAL MPlugin::clear(void) {
 		status = PL_FAILED;
 		RETURN_ERRNO(mFALSE, ME_DLERROR);
 	}
-	handle = NULL;
+	handle = nullptr;
 
 	free_api_pointers();
 
 	status = PL_EMPTY;
 	action = PA_NULL;
-	handle = NULL;
-	info = NULL;
+	handle = nullptr;
+	info = nullptr;
 	time_loaded = 0;
-	gamedll_funcs.dllapi_table = NULL;
-	gamedll_funcs.newapi_table = NULL;
+	gamedll_funcs.dllapi_table = nullptr;
+	gamedll_funcs.newapi_table = nullptr;
 	memset(&tables, 0, sizeof(tables));
 	memset(&post_tables, 0, sizeof(post_tables));
 
@@ -1360,7 +1354,8 @@ void DLLINTERNAL MPlugin::show(void) {
 // meta_errno values:
 //  - ME_NOFILE		couldn't find file
 //  - ME_NOERROR	no error; false indicates file not newer
-mBOOL DLLINTERNAL MPlugin::newer_file(void) {
+mBOOL DLLINTERNAL MPlugin::newer_file(void) const
+{
 	struct stat st;
 
 	if (stat(pathname, &st) != 0)
@@ -1370,8 +1365,7 @@ mBOOL DLLINTERNAL MPlugin::newer_file(void) {
 		file, time_loaded, file_time, st.st_ctime, st.st_mtime));
 	if (file_time > time_loaded)
 		return(mTRUE);
-	else
-		RETURN_ERRNO(mFALSE, ME_NOERROR);
+	RETURN_ERRNO(mFALSE, ME_NOERROR);
 }
 
 // Return a string describing status of plugin.
@@ -1379,29 +1373,44 @@ mBOOL DLLINTERNAL MPlugin::newer_file(void) {
 // SHOW is max 4 chars, for "show" output.
 // meta_errno values:
 //  - none
-const char* DLLINTERNAL MPlugin::str_status(STR_STATUS fmt) {
+const char* DLLINTERNAL MPlugin::str_status(STR_STATUS fmt) const
+{
 	switch (status) {
 	case PL_EMPTY:
-		if (fmt == ST_SHOW) return("empt");
-		else return("empty");
+		{
+			if (fmt == ST_SHOW) return("empt");
+			return("empty");
+		}
 	case PL_VALID:
-		if (fmt == ST_SHOW) return("info");
-		else return("valid");
+		{
+			if (fmt == ST_SHOW) return("info");
+			return("valid");
+		}
 	case PL_BADFILE:
-		if (fmt == ST_SHOW) return("badf");
-		else return("badfile");
+		{
+			if (fmt == ST_SHOW) return("badf");
+			return("badfile");
+		}
 	case PL_OPENED:
-		if (fmt == ST_SHOW) return("open");
-		else return("opened");
+		{
+			if (fmt == ST_SHOW) return("open");
+			return("opened");
+		}
 	case PL_FAILED:
-		if (fmt == ST_SHOW) return("fail");
-		else return("failed");
+		{
+			if (fmt == ST_SHOW) return("fail");
+			return("failed");
+		}
 	case PL_RUNNING:
-		if (fmt == ST_SHOW) return("RUN");
-		else return("running");
+		{
+			if (fmt == ST_SHOW) return("RUN");
+			return("running");
+		}
 	case PL_PAUSED:
-		if (fmt == ST_SHOW) return("PAUS");
-		else return("paused");
+		{
+			if (fmt == ST_SHOW) return("PAUS");
+			return("paused");
+		}
 	default:
 		if (fmt == ST_SHOW) return(META_UTIL_VarArgs("UNK%d", status));
 		return(META_UTIL_VarArgs("unknown (%d)", status));
@@ -1413,32 +1422,49 @@ const char* DLLINTERNAL MPlugin::str_status(STR_STATUS fmt) {
 // SHOW is max 4 chars, for "show" output.
 // meta_errno values:
 //  - none
-const char* DLLINTERNAL MPlugin::str_action(STR_ACTION fmt) {
+const char* DLLINTERNAL MPlugin::str_action(STR_ACTION fmt) const
+{
 	switch (action) {
 	case PA_NULL:
-		if (fmt == SA_SHOW) return("NULL");
-		else return("null");
+		{
+			if (fmt == SA_SHOW) return("NULL");
+			return("null");
+		}
 	case PA_NONE:
-		if (fmt == SA_SHOW) return(" -  ");
-		else return("none");
+		{
+			if (fmt == SA_SHOW) return(" -  ");
+			return("none");
+		}
 	case PA_KEEP:
-		if (fmt == SA_SHOW) return("keep");
-		else return("keep");
+		{
+			if (fmt == SA_SHOW) return("keep");
+			return("keep");
+		}
 	case PA_LOAD:
-		if (fmt == SA_SHOW) return("load");
-		else return("load");
+		{
+			if (fmt == SA_SHOW) return("load");
+			return("load");
+		}
 	case PA_ATTACH:
-		if (fmt == SA_SHOW) return("atch");
-		else return("attach");
+		{
+			if (fmt == SA_SHOW) return("atch");
+			return("attach");
+		}
 	case PA_UNLOAD:
-		if (fmt == SA_SHOW) return("unld");
-		else return("unload");
+		{
+			if (fmt == SA_SHOW) return("unld");
+			return("unload");
+		}
 	case PA_RELOAD:
-		if (fmt == SA_SHOW) return("relo");
-		else return("reload");
+		{
+			if (fmt == SA_SHOW) return("relo");
+			return("reload");
+		}
 	default:
-		if (fmt == SA_SHOW) return(META_UTIL_VarArgs("UNK%d", action));
-		else return(META_UTIL_VarArgs("unknown (%d)", action));
+		{
+			if (fmt == SA_SHOW) return(META_UTIL_VarArgs("UNK%d", action));
+			return(META_UTIL_VarArgs("unknown (%d)", action));
+		}
 	}
 }
 
@@ -1452,38 +1478,51 @@ const char* DLLINTERNAL MPlugin::str_action(STR_ACTION fmt) {
 const char* DLLINTERNAL MPlugin::str_loadtime(PLUG_LOADTIME ptime, STR_LOADTIME fmt) {
 	switch (ptime) {
 	case PT_NEVER:
-		if (fmt == SL_SHOW) return("Never");
-		else return("never");
+		{
+			if (fmt == SL_SHOW) return("Never");
+			return("never");
+		}
 	case PT_STARTUP:
-		if (fmt == SL_SHOW) return("Start");
-		else if (fmt == SL_ALLOWED) return("at server startup");
-		else if (fmt == SL_NOW) return("during server startup");
-		else return("startup");
+		{
+			if (fmt == SL_SHOW) return("Start");
+			if (fmt == SL_ALLOWED) return("at server startup");
+			if (fmt == SL_NOW) return("during server startup");
+			return("startup");
+		}
 	case PT_CHANGELEVEL:
-		if (fmt == SL_SHOW) return("Chlvl");
-		else if (fmt == SL_ALLOWED) return("at changelevel");
-		else if (fmt == SL_NOW) return("during changelevel");
-		else return("changelevel");
+		{
+			if (fmt == SL_SHOW) return("Chlvl");
+			if (fmt == SL_ALLOWED) return("at changelevel");
+			if (fmt == SL_NOW) return("during changelevel");
+			return("changelevel");
+		}
 	case PT_ANYTIME:
-		if (fmt == SL_SHOW) return("ANY");
-		else if (fmt == SL_ALLOWED) return("at any time");
-		else if (fmt == SL_NOW) return("during map");
-		else return("anytime");
+		{
+			if (fmt == SL_SHOW) return("ANY");
+			if (fmt == SL_ALLOWED) return("at any time");
+			if (fmt == SL_NOW) return("during map");
+			return("anytime");
+		}
 	case PT_ANYPAUSE:
-		if (fmt == SL_SHOW) return("Pause");
-		else if (fmt == SL_ALLOWED) return("at any time, and pausable");
-		else if (fmt == SL_NOW) return("for requested pause");
-		else return("pausable");
+		{
+			if (fmt == SL_SHOW) return("Pause");
+			if (fmt == SL_ALLOWED) return("at any time, and pausable");
+			if (fmt == SL_NOW) return("for requested pause");
+			return("pausable");
+		}
 	default:
-		if (fmt == SL_SHOW) return(META_UTIL_VarArgs("UNK-%d", ptime));
-		else return(META_UTIL_VarArgs("unknown (%d)", ptime));
+		{
+			if (fmt == SL_SHOW) return(META_UTIL_VarArgs("UNK-%d", ptime));
+			return(META_UTIL_VarArgs("unknown (%d)", ptime));
+		}
 	}
 }
 
 // Return a string describing why a plugin is to be unloaded.
 // meta_errno values:
 //  - none
-const char* DLLINTERNAL MPlugin::str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason) {
+const char* DLLINTERNAL MPlugin::str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason) const
+{
 	char buf[128];
 
 	if (preason == PNL_PLUGIN)
@@ -1518,25 +1557,32 @@ const char* DLLINTERNAL MPlugin::str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_
 // Return a string describing how the plugin was loaded.
 // meta_errno values:
 //  - none
-const char* DLLINTERNAL MPlugin::str_source(STR_SOURCE fmt) {
+const char* DLLINTERNAL MPlugin::str_source(STR_SOURCE fmt) const
+{
 	switch (source) {
 	case PS_INI:
-		if (fmt == SO_SHOW) return("ini");
-		else return("ini file");
-	case PS_CMD:
-		if (fmt == SO_SHOW) return("cmd");
-		else return("console command");
-	case PS_PLUGIN:
-		if (source_plugin_index <= 0) {
-			if (fmt == SO_SHOW) return("plUN");
-			else return("unloaded plugin");
+		{
+			if (fmt == SO_SHOW) return("ini");
+			return("ini file");
 		}
-		else {
+	case PS_CMD:
+		{
+			if (fmt == SO_SHOW) return("cmd");
+			return("console command");
+		}
+	case PS_PLUGIN:
+		{
+			if (source_plugin_index <= 0) {
+				if (fmt == SO_SHOW) return("plUN");
+				return("unloaded plugin");
+			}
 			if (fmt == SO_SHOW) return(META_UTIL_VarArgs("pl%d", source_plugin_index));
-			else return(META_UTIL_VarArgs("plugin [%d]", source_plugin_index));
+			return(META_UTIL_VarArgs("plugin [%d]", source_plugin_index));
 		}
 	default:
-		if (fmt == SO_SHOW) return(META_UTIL_VarArgs("UNK%d", source));
-		else return(META_UTIL_VarArgs("unknown (%d)", source));
+		{
+			if (fmt == SO_SHOW) return(META_UTIL_VarArgs("UNK%d", source));
+			return(META_UTIL_VarArgs("unknown (%d)", source));
+		}
 	}
 }

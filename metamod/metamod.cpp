@@ -57,19 +57,19 @@
 #include "vdate.h"				// COMPILE_TIME, etc
 #include "linkent.h"
 
-cvar_t meta_version = { "metamod_version", VVERSION, FCVAR_SERVER, 0, NULL };
+cvar_t meta_version = { "metamod_version", VVERSION, FCVAR_SERVER, 0, nullptr };
 
 MConfig static_config;
 MConfig* Config = &static_config;
 option_t global_options[] = {
 	{ "debuglevel",		CF_INT,			&Config->debuglevel,	"0" },
-	{ "gamedll",		CF_PATH,		&Config->gamedll,		NULL },
+	{ "gamedll",		CF_PATH,		&Config->gamedll, nullptr },
 	{ "plugins_file",	CF_PATH,		&Config->plugins_file,	PLUGINS_INI },
 	{ "exec_cfg",		CF_STR,			&Config->exec_cfg,		EXEC_CFG },
 	{ "autodetect",		CF_BOOL,		&Config->autodetect,	"yes" },
 	{ "clientmeta",		CF_BOOL,		&Config->clientmeta,	"yes" },
 	// list terminator
-	{ NULL, CF_NONE, NULL, NULL }
+	{nullptr, CF_NONE, nullptr, nullptr }
 };
 
 gamedll_t GameDLL;
@@ -216,9 +216,9 @@ int DLLINTERNAL metamod_startup(void) {
 	if (IS_VALID_PTR((void*)Engine.pl_funcs->pfnQueryClientCvarValue))
 		Engine.pl_funcs->pfnQueryClientCvarValue = meta_QueryClientCvarValue;
 	else
-		Engine.pl_funcs->pfnQueryClientCvarValue = NULL;
+		Engine.pl_funcs->pfnQueryClientCvarValue = nullptr;
 	if (!IS_VALID_PTR((void*)Engine.pl_funcs->pfnQueryClientCvarValue2))
-		Engine.pl_funcs->pfnQueryClientCvarValue2 = NULL;
+		Engine.pl_funcs->pfnQueryClientCvarValue2 = nullptr;
 
 	// Before, we loaded plugins before loading the game DLL, so that if no
 	// plugins caught engine functions, we could pass engine funcs straight
@@ -274,7 +274,7 @@ int DLLINTERNAL metamod_startup(void) {
 	else if (valid_gamedir_file(OLD_EXEC_CFG))
 		mmfile = OLD_EXEC_CFG;
 	else
-		mmfile = NULL;
+		mmfile = nullptr;
 
 	if (mmfile) {
 		if (mmfile[0] == '/')
@@ -344,7 +344,7 @@ mBOOL DLLINTERNAL meta_init_gamedll(void) {
 //                	(GiveFnptrsToDll, GetEntityAPI, GetEntityAPI2)
 mBOOL DLLINTERNAL meta_load_gamedll(void) {
 	int iface_vers;
-	int found = 0;
+	int found;
 
 	GIVE_ENGINE_FUNCTIONS_FN pfn_give_engfuncs;
 	GETNEWDLLFUNCTIONS_FN pfn_getapinew;

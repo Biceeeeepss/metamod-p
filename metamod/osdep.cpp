@@ -60,13 +60,13 @@ mBOOL dlclose_handle_invalid;
 // here.  This may or may not operate exactly like strtok_r(), but does
 // what we need it it do.
 char* DLLINTERNAL my_strtok_r(char* s, const char* delim, char** ptrptr) {
-	char* begin = NULL;
+	char* begin = nullptr;
 	if (s)
 		begin = s;
 	else
 		begin = *ptrptr;
 	if (!begin)
-		return(NULL);
+		return(nullptr);
 	char* end = strpbrk(begin, delim);
 	if (end) {
 		*end = '\0';
@@ -74,7 +74,7 @@ char* DLLINTERNAL my_strtok_r(char* s, const char* delim, char** ptrptr) {
 		*ptrptr = rest + strspn(rest, delim);
 	}
 	else
-		*ptrptr = NULL;
+		*ptrptr = nullptr;
 	return(begin);
 }
 #endif /* _WIN32 */
@@ -222,9 +222,9 @@ void DLLINTERNAL safevoid_snprintf(char* s, size_t n, const char* format, ...) {
 char* DLLINTERNAL str_GetLastError(void) {
 	static char buf[MAX_STRBUF_LEN];
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL, GetLastError(),
+		nullptr, GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), //! Default language
-		(LPTSTR)&buf, MAX_STRBUF_LEN - 1, NULL);
+		(LPTSTR)&buf, MAX_STRBUF_LEN - 1, nullptr);
 	return(buf);
 }
 #endif /* _WIN32 */
@@ -313,24 +313,23 @@ void DLLINTERNAL normalize_pathname(char* path) {
 // Buffer pointed to by resolved_name is assumed to be able to store a
 // string of PATH_MAX length.
 char* DLLINTERNAL realpath(const char* file_name, char* resolved_name) {
-	int ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, NULL);
+	int ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, nullptr);
 	if (ret > PATH_MAX) {
 		errno = ENAMETOOLONG;
-		return(NULL);
+		return(nullptr);
 	}
-	else if (ret > 0) {
+	if (ret > 0) {
 		WIN32_FIND_DATAA find_data;
 		HANDLE handle = FindFirstFileA(resolved_name, &find_data);
 		if (INVALID_HANDLE_VALUE == handle) {
 			errno = ENOENT;
-			return(NULL);
+			return(nullptr);
 		}
 		FindClose(handle);
 		normalize_pathname(resolved_name);
 		return(resolved_name);
 	}
-	else
-		return(NULL);
+	return(nullptr);
 }
 #endif /*_WIN32*/
 
@@ -358,8 +357,7 @@ mBOOL DLLINTERNAL IS_VALID_PTR(void* memptr) {
 mBOOL DLLINTERNAL IS_VALID_PTR(void* memptr) {
 	if (IsBadCodePtr((FARPROC)memptr))
 		RETURN_ERRNO(mFALSE, ME_BADMEMPTR);
-	else
-		return(mTRUE);
+	return(mTRUE);
 }
 #endif /* _WIN32 */
 
