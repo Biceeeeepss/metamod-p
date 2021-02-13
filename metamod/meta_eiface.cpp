@@ -76,7 +76,7 @@ void DLLINTERNAL meta_new_dll_functions_t::copy_to(NEW_DLL_FUNCTIONS* _pFuncs)
 	// that version over to the receiver, so that we do not overwrite his
 	// memory with functions that he doesn't know of in his copy of the
 	// struct.
-	const size_t size = get_size();
+	const auto size = get_size();
 
 	if (0 == size) {
 		// Ok, this is a real problem and should *not* happen.
@@ -128,7 +128,7 @@ int DLLINTERNAL meta_new_dll_functions_t::determine_interface_version(void)
 
 size_t DLLINTERNAL meta_new_dll_functions_t::get_size(int _version)
 {
-	size_t size = sizeof(NEW_DLL_FUNCTIONS);
+	auto size = sizeof(NEW_DLL_FUNCTIONS);
 
 	if (0 == _version) {
 		// Use the current engine's interface version
@@ -627,7 +627,7 @@ void HL_enginefuncs_t::determine_engine_interface_version(void)
 	// made.
 	// (Yes, I know this could be done with a little hacky for() loop. We
 	// don't need to do hacky here.)
-	int cntInvals = 0;
+	auto cntInvals = 0;
 	if (pfnGetApproxWavePlayLen == nullptr) cntInvals++;
 	if (pfnIsCareerMatch == nullptr) cntInvals++;
 	if (pfnGetLocalizedStringLength == nullptr) cntInvals++;

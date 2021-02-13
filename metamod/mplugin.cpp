@@ -62,7 +62,7 @@ mBOOL DLLINTERNAL MPlugin::ini_parseline(const char* line) {
 	char* ptr_token;
 
 	//
-	char* tmp_line = strdup(line);
+	auto* tmp_line = strdup(line);
 	if (!tmp_line)
 		RETURN_ERRNO(mFALSE, ME_NOMEM);
 
@@ -70,7 +70,7 @@ mBOOL DLLINTERNAL MPlugin::ini_parseline(const char* line) {
 	while (*tmp_line == ' ' || *tmp_line == '\t') tmp_line++;
 
 	// remove whitespace at end of line
-	char* cp = tmp_line + strlen(tmp_line) - 1;
+	auto* cp = tmp_line + strlen(tmp_line) - 1;
 	while (*cp == ' ' || *cp == '\t') *cp-- = '\0';
 
 	// skip empty lines
@@ -87,7 +87,7 @@ mBOOL DLLINTERNAL MPlugin::ini_parseline(const char* line) {
 	}
 
 	// grab platform ("win32" or "linux")
-	char* token = strtok_r(tmp_line, " \t", &ptr_token);
+	auto* token = strtok_r(tmp_line, " \t", &ptr_token);
 	if (!token) {
 		free(tmp_line);
 		RETURN_ERRNO(mFALSE, ME_FORMAT);
@@ -154,7 +154,7 @@ mBOOL DLLINTERNAL MPlugin::cmd_parseline(const char* line) {
 	STRNCPY(buf, line, sizeof(buf));
 
 	// remove "load"
-	char* token = strtok_r(buf, " \t", &ptr_token);
+	auto* token = strtok_r(buf, " \t", &ptr_token);
 	if (!token)
 		RETURN_ERRNO(mFALSE, ME_FORMAT);
 
@@ -165,7 +165,7 @@ mBOOL DLLINTERNAL MPlugin::cmd_parseline(const char* line) {
 	STRNCPY(filename, token, sizeof(filename));
 	normalize_pathname(filename);
 	// store name of just the actual _file_, without dir components
-	char* cp = strrchr(filename, '/');
+	auto* cp = strrchr(filename, '/');
 	if (cp)
 		file = cp + 1;
 	else
@@ -202,7 +202,7 @@ mBOOL DLLINTERNAL MPlugin::plugin_parseline(const char* fname, int loader_index)
 	STRNCPY(filename, fname, sizeof(filename));
 	normalize_pathname(filename);
 	// store name of just the actual _file_, without dir components
-	char* cp = strrchr(filename, '/');
+	auto* cp = strrchr(filename, '/');
 	if (cp)
 		file = cp + 1;
 	else
@@ -285,7 +285,7 @@ mBOOL DLLINTERNAL MPlugin::resolve(void) {
 	// store pathname: the resolved path (should be absolute)
 	STRNCPY(pathname, found, sizeof(pathname));
 	// store file: the name of the file (without dir)
-	char* cp = strrchr(pathname, '/');
+	auto* cp = strrchr(pathname, '/');
 	if (cp)
 		file = cp + 1;
 	else
@@ -348,10 +348,10 @@ char* DLLINTERNAL MPlugin::resolve_prefix(const char* path) const
 	// try "mm_" prefix FIRST.
 	// split into dirname and filename
 	STRNCPY(dname, path, sizeof(dname));
-	char* cp = strrchr(dname, '/');
+	auto* cp = strrchr(dname, '/');
 	if (cp) {
 		*cp = '\0';
-		char* fname = cp + 1;
+		auto* fname = cp + 1;
 		safevoid_snprintf(buf, sizeof(buf), "%s/mm_%s", dname, fname);
 	}
 	else {
@@ -464,7 +464,7 @@ mBOOL DLLINTERNAL MPlugin::is_platform_postfix(const char* pf) {
 	if (!pf)
 		return(mFALSE);
 
-	for (const postfix_t* plist = postfixes; plist->postfix; plist++) {
+	for (const auto* plist = postfixes; plist->postfix; plist++) {
 		if (!mm_strncmp(pf, plist->postfix, plist->len))
 			return(mTRUE);
 	}
@@ -498,18 +498,18 @@ mBOOL DLLINTERNAL MPlugin::platform_match(MPlugin* other) {
 	if (*desc != '\0' && strcasecmp(desc, other->desc) == 0)
 		return(mTRUE);
 
-	char* end = strrchr(file, '_');
+	auto* end = strrchr(file, '_');
 	if (end == nullptr || !is_platform_postfix(end))
 		end = strrchr(file, '.');
 
-	char* other_end = strrchr(other->file, '_');
+	auto* other_end = strrchr(other->file, '_');
 	if (other_end == nullptr || !is_platform_postfix(other_end))
 		other_end = strrchr(other->file, '.');
 
 	if (end == nullptr || other_end == nullptr)
 		return(mFALSE);
 
-	const int prefixlen = end - file;
+	const auto prefixlen = end - file;
 	if ((other_end - other->file) != prefixlen)
 		return(mFALSE);
 
@@ -645,7 +645,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// GiveFnptrsToDll before Meta_Query, because the latter typically uses
 	// engine functions like AlertMessage, which have to be passed along via
 	// GiveFnptrsToDll.
-	const META_QUERY_FN pfn_query = (META_QUERY_FN)DLSYM(handle, "Meta_Query");
+	const auto pfn_query = (META_QUERY_FN)DLSYM(handle, "Meta_Query");
 	if (!pfn_query) {
 		META_WARNING("dll: Failed query plugin '%s'; Couldn't find Meta_Query(): %s", desc, DLERROR());
 		// caller will dlclose()
@@ -666,7 +666,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// This passes nothing and returns nothing, and the routine in the
 	// plugin can NOT use any Engine functions, as they haven't been
 	// provided yet (done next, in GiveFnptrsToDll).
-	const META_INIT_FN pfn_init = (META_INIT_FN)DLSYM(handle, "Meta_Init");
+	const auto pfn_init = (META_INIT_FN)DLSYM(handle, "Meta_Init");
 	if (pfn_init) {
 		pfn_init();
 		META_DEBUG(6, ("dll: Plugin '%s': Called Meta_Init()", desc));
@@ -714,7 +714,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// Note, this check is done regardless of whether meta_query returns an
 	// error.
 	if (info && !FStrEq(info->ifvers, META_INTERFACE_VERSION)) {
-		int mmajor = 0, mminor = 0, pmajor = 0, pminor = 0;
+		auto mmajor = 0, mminor = 0, pmajor = 0, pminor = 0;
 		META_DEBUG(3, ("dll: Note: Plugin '%s' interface version didn't match; expected %s, found %s", desc, META_INTERFACE_VERSION, info->ifvers));
 		sscanf(META_INTERFACE_VERSION, "%d:%d", &mmajor, &mminor);
 		sscanf(info->ifvers, "%d:%d", &pmajor, &pminor);
@@ -764,7 +764,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// Check for version differences!
 	//
 	if (nullptr != (pfn_give_pext_funcs = (META_GIVE_PEXT_FUNCTIONS_FN)DLSYM(handle, "Meta_PExtGiveFnptrs"))) {
-		const int plugin_pext_version = (*pfn_give_pext_funcs)(
+		const auto plugin_pext_version = (*pfn_give_pext_funcs)(
 			META_PEXT_VERSION, (pextension_funcs_t*)(&(mutil_funcs.pfnLoadPlugin)));
 
 		//if plugin is newer, we got incompatibility problem!
@@ -839,7 +839,7 @@ mBOOL DLLINTERNAL MPlugin::attach(PLUG_LOADTIME now) {
 	memset(&meta_table, 0, sizeof(meta_table));
 	// get table of function tables,
 	// give public meta globals
-	const int ret = pfn_attach(now, &meta_table, &PublicMetaGlobals, &gamedll_funcs);
+	const auto ret = pfn_attach(now, &meta_table, &PublicMetaGlobals, &gamedll_funcs);
 	if (ret != TRUE) {
 		META_WARNING("dll: Failed attach plugin '%s': Error from Meta_Attach(): %d", desc, ret);
 		// caller will dlclose()
@@ -959,7 +959,7 @@ mBOOL DLLINTERNAL MPlugin::plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLO
 	pl_unloader->is_unloader = mTRUE;
 
 	// try unload
-	const PLUG_ACTION old_action = action;
+	const auto old_action = action;
 	action = PA_UNLOAD;
 	if (unload(now, reason, (reason == PNL_CMD_FORCED) ? PNL_PLG_FORCED : PNL_PLUGIN)) {
 		META_DEBUG(1, ("Unloaded plugin '%s'", desc));
@@ -1095,7 +1095,7 @@ mBOOL DLLINTERNAL MPlugin::detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason) {
 		RETURN_ERRNO(mFALSE, ME_DLMISSING);
 	}
 
-	const int ret = pfn_detach(now, reason);
+	const auto ret = pfn_detach(now, reason);
 	if (ret != TRUE) {
 		META_WARNING("dll: Failed detach plugin '%s': Error from Meta_Detach(): %d", desc, ret);
 		RETURN_ERRNO(mFALSE, ME_DLERROR);
@@ -1271,7 +1271,7 @@ mBOOL DLLINTERNAL MPlugin::clear(void) {
 void DLLINTERNAL MPlugin::show(void) {
 	char* cp;
 	int n;
-	const int width = 13;
+	const auto width = 13;
 	META_CONS("%*s: %s", width, "name", info ? info->name : "(nil)");
 	META_CONS("%*s: %s", width, "desc", desc);
 	META_CONS("%*s: %s", width, "status", str_status());
@@ -1290,7 +1290,7 @@ void DLLINTERNAL MPlugin::show(void) {
 	META_CONS("%*s: %s", width, "logtag", info ? info->logtag : "(nil)");
 	META_CONS("%*s: %s", width, "ifvers", info ? info->ifvers : "(nil)");
 	// ctime() includes newline at EOL
-	char* tstr = ctime(&time_loaded);
+	auto* tstr = ctime(&time_loaded);
 	if ((cp = strchr(tstr, '\n')))
 		*cp = '\0';
 	META_CONS("%*s: %s", width, "last loaded", tstr);
@@ -1360,7 +1360,7 @@ mBOOL DLLINTERNAL MPlugin::newer_file(void) const
 
 	if (stat(pathname, &st) != 0)
 		RETURN_ERRNO(mFALSE, ME_NOFILE);
-	const time_t file_time = st.st_ctime > st.st_mtime ? st.st_ctime : st.st_mtime;
+	const auto file_time = st.st_ctime > st.st_mtime ? st.st_ctime : st.st_mtime;
 	META_DEBUG(5, ("newer_file? file=%s; load=%d, file=%d; ctime=%d, mtime=%d",
 		file, time_loaded, file_time, st.st_ctime, st.st_mtime));
 	if (file_time > time_loaded)

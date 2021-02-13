@@ -97,11 +97,11 @@ mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 	if (!to)
 		to = from;
 
-	byte* cachefile = LOAD_FILE_FOR_ME(from, &length_in);
+	auto* cachefile = LOAD_FILE_FOR_ME(from, &length_in);
 
 	// If the file seems to exist in the cache.
 	if (cachefile) {
-		int fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		const auto fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 
 		if (fd < 0) {
 			META_DEBUG(3, ("Installing gamedll from cache: Failed to create file %s: %s", to, strerror(errno)));
@@ -155,7 +155,7 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 #endif
 
 	const char* autofn = nullptr, * knownfn = nullptr, * usedfn = nullptr;
-	int override = 0;
+	auto override = 0;
 
 	// Check for old-style "metagame.ini" file and complain.
 	if (valid_gamedir_file(OLD_GAMEDLL_TXT))

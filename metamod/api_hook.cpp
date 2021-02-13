@@ -79,7 +79,7 @@ void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_
 	meta_globals_t backup_meta_globals[1];
 
 	//passing offset from api wrapper function makes code faster/smaller
-	const api_info_t* api_info = get_api_info(api, api_info_offset);
+	const auto* api_info = get_api_info(api, api_info_offset);
 
 	//Fix bug with metamod-bot-plugins.
 	if (unlikely(call_count++ > 0)) {
@@ -88,13 +88,13 @@ void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_
 	}
 
 	//Setup
-	const int loglevel = api_info->loglevel;
-	META_RES mres = MRES_UNSET;
-	META_RES status = MRES_UNSET;
+	const auto loglevel = api_info->loglevel;
+	auto mres = MRES_UNSET;
+	auto status = MRES_UNSET;
 	void* pfn_routine = nullptr;
 
 	//Pre plugin functions
-	META_RES prev_mres = MRES_UNSET;
+	auto prev_mres = MRES_UNSET;
 	for (i = 0; likely(i < Plugins->endlist); i++) {
 		iplug = &Plugins->plist[i];
 
@@ -240,11 +240,11 @@ void* DLLINTERNAL main_hook_function(const class_ret_t ret_init,
 	}
 
 	//Return class setup
-	class_ret_t dllret = ret_init;
-	class_ret_t override_ret = ret_init;
-	class_ret_t pub_override_ret = ret_init;
-	class_ret_t orig_ret = ret_init;
-	class_ret_t pub_orig_ret = ret_init;
+	auto dllret = ret_init;
+	auto override_ret = ret_init;
+	auto pub_override_ret = ret_init;
+	auto orig_ret = ret_init;
+	auto pub_orig_ret = ret_init;
 
 	//Setup
 	loglevel = api_info->loglevel;

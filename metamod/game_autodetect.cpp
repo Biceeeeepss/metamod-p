@@ -74,7 +74,7 @@ const char* DLLINTERNAL autodetect_gamedll(const gamedll_t* gamedll, const char*
 	}
 
 	while ((ent = readdir(dir)) != nullptr) {
-		const unsigned int fn_len = strlen(ent->d_name);
+		const auto fn_len = strlen(ent->d_name);
 
 		if (fn_len <= strlen(PLATFORM_DLEXT)) {
 			// Filename is too short

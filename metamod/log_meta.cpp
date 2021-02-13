@@ -66,7 +66,7 @@ void DLLINTERNAL META_CONS(const char* fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	const unsigned int len = strlen(buf);
+	const auto len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -83,7 +83,7 @@ void DLLINTERNAL META_DEV(const char* fmt, ...) {
 	va_list ap;
 
 	if (nullptr != g_engfuncs.pfnCVarGetFloat) {
-		const int dev = (int)CVAR_GET_FLOAT("developer");
+		const auto dev = (int)CVAR_GET_FLOAT("developer");
 		if (dev == 0) return;
 	}
 
@@ -140,7 +140,7 @@ void DLLINTERNAL META_CLIENT(edict_t* pEntity, const char* fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	const unsigned int len = strlen(buf);
+	const auto len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -194,7 +194,7 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 	}
 
 	// Engine AlertMessage function not available. Buffer message.
-	BufferedMessage* msg = new BufferedMessage;
+	auto* msg = new BufferedMessage;
 	if (nullptr == msg) {
 		// though luck, gonna lose this message
 		return;
@@ -218,8 +218,8 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 // service. This function doesn't check anymore if the g_engfuncs
 // jumptable is set. Don't call it if it isn't set.
 void DLLINTERNAL flush_ALERT_buffer(void) {
-	BufferedMessage* msg = messageQueueStart;
-	const int dev = (int)CVAR_GET_FLOAT("developer");
+	auto* msg = messageQueueStart;
+	const auto dev = (int)CVAR_GET_FLOAT("developer");
 
 	while (nullptr != msg) {
 		if (msg->service == mlsDEV && dev == 0) {

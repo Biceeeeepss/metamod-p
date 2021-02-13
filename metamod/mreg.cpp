@@ -81,7 +81,7 @@ mBOOL DLLINTERNAL MRegCmd::call(void) {
 		RETURN_ERRNO(mFALSE, ME_ARGUMENT);
 
 	// try to call this function
-	const mBOOL ret = os_safe_call(pfnCmd);
+	const auto ret = os_safe_call(pfnCmd);
 	if (!ret) {
 		META_DEBUG(4, ("Plugin reg_cmd '%s' called after unloaded; removed from list", name));
 		status = RG_INVALID;
@@ -101,7 +101,7 @@ MRegCmdList::MRegCmdList(void)
 {
 	mlist = (MRegCmd*)calloc(1, size * sizeof(MRegCmd));
 	// initialize array
-	for (int i = 0; i < size; i++)
+	for (auto i = 0; i < size; i++)
 		mlist[i].init(i + 1);		// 1-based index
 	endlist = 0;
 }
@@ -111,7 +111,7 @@ MRegCmdList::MRegCmdList(void)
 //  - ME_NOTFOUND	couldn't find a matching function
 MRegCmd* DLLINTERNAL MRegCmdList::find(const char* findname) const
 {
-	for (int i = 0; i < endlist; i++) {
+	for (auto i = 0; i < endlist; i++) {
 		if (!strcasecmp(mlist[i].name, findname))
 			return(&mlist[i]);
 	}
@@ -125,9 +125,9 @@ MRegCmd* DLLINTERNAL MRegCmdList::find(const char* findname) const
 //  - ME_NOMEM			couldn't realloc or malloc for various parts
 MRegCmd* DLLINTERNAL MRegCmdList::add(const char* addname) {
 	if (endlist == size) {
-		const int newsize = size + REG_CMD_GROWSIZE;
+		const auto newsize = size + REG_CMD_GROWSIZE;
 		META_DEBUG(6, ("Growing reg cmd list from %d to %d", size, newsize));
-		MRegCmd* temp = (MRegCmd*)realloc(mlist, newsize * sizeof(MRegCmd));
+		auto* temp = (MRegCmd*)realloc(mlist, newsize * sizeof(MRegCmd));
 		if (!temp) {
 			META_WARNING("Couldn't grow registered command list to %d for '%s': %s", newsize, addname, strerror(errno));
 			RETURN_ERRNO(NULL, ME_NOMEM);
@@ -135,12 +135,12 @@ MRegCmd* DLLINTERNAL MRegCmdList::add(const char* addname) {
 		mlist = temp;
 		size = newsize;
 		// initialize new (unused) entries
-		for (int i = endlist; i < size; i++) {
+		for (auto i = endlist; i < size; i++) {
 			memset(&mlist[i], 0, sizeof(mlist[i]));
 			mlist[i].init(i + 1);		// 1-based
 		}
 	}
-	MRegCmd* icmd = &mlist[endlist];
+	auto* icmd = &mlist[endlist];
 
 	// Malloc space separately for the command name, because:
 	//  - Can't point to memory loc in plugin (another segv waiting to
@@ -161,7 +161,7 @@ MRegCmd* DLLINTERNAL MRegCmdList::add(const char* addname) {
 // Disable any functions belonging to the given plugin (by index id).
 void DLLINTERNAL MRegCmdList::disable(int plugin_id) const
 {
-	for (int i = 0; i < size; i++) {
+	for (auto i = 0; i < size; i++) {
 		if (mlist[i].plugid == plugin_id)
 			mlist[i].status = RG_INVALID;
 	}
@@ -170,7 +170,7 @@ void DLLINTERNAL MRegCmdList::disable(int plugin_id) const
 // List all the registered commands.
 void DLLINTERNAL MRegCmdList::show(void) const
 {
-	int n = 0, a = 0;
+	auto n = 0, a = 0;
 	char bplug[18 + 1];	// +1 for term null
 
 	META_CONS("Registered plugin commands:");
@@ -178,11 +178,11 @@ void DLLINTERNAL MRegCmdList::show(void) const
 		WIDTH_MAX_REG, "",
 		sizeof(bplug) - 1, "plugin", "command");
 
-	for (int i = 0; i < endlist; i++) {
-		MRegCmd* icmd = &mlist[i];
+	for (auto i = 0; i < endlist; i++) {
+		auto* icmd = &mlist[i];
 
 		if (icmd->status == RG_VALID) {
-			MPlugin* iplug = Plugins->find(icmd->plugid);
+			auto* iplug = Plugins->find(icmd->plugid);
 
 			if (iplug)
 				STRNCPY(bplug, iplug->desc, sizeof(bplug));
@@ -209,7 +209,7 @@ void DLLINTERNAL MRegCmdList::show(void) const
 // List all the registered commands for the given plugin id.
 void DLLINTERNAL MRegCmdList::show(int plugin_id) const
 {
-	int n = 0;
+	auto n = 0;
 
 	/*
 	// If OS doesn't support DLFNAME, then we can't know what the plugin's
@@ -222,8 +222,8 @@ void DLLINTERNAL MRegCmdList::show(int plugin_id) const
 	*/
 
 	META_CONS("Registered commands:");
-	for (int i = 0; i < endlist; i++) {
-		MRegCmd* icmd = &mlist[i];
+	for (auto i = 0; i < endlist; i++) {
+		auto* icmd = &mlist[i];
 		if (icmd->plugid != plugin_id)
 			continue;
 		META_CONS("   %s", icmd->name);
@@ -271,7 +271,7 @@ MRegCvarList::MRegCvarList(void)
 {
 	vlist = (MRegCvar*)calloc(1, size * sizeof(MRegCvar));
 	// initialize array
-	for (int i = 0; i < size; i++)
+	for (auto i = 0; i < size; i++)
 		vlist[i].init(i + 1);		// 1-based
 	endlist = 0;
 }
@@ -283,9 +283,9 @@ MRegCvarList::MRegCvarList(void)
 //  - ME_NOMEM			couldn't alloc or realloc for various parts
 MRegCvar* DLLINTERNAL MRegCvarList::add(const char* addname) {
 	if (endlist == size) {
-		const int newsize = size + REG_CVAR_GROWSIZE;
+		const auto newsize = size + REG_CVAR_GROWSIZE;
 		META_DEBUG(6, ("Growing reg cvar list from %d to %d", size, newsize));
-		MRegCvar* temp = (MRegCvar*)realloc(vlist, newsize * sizeof(MRegCvar));
+		auto* temp = (MRegCvar*)realloc(vlist, newsize * sizeof(MRegCvar));
 		if (!temp) {
 			META_WARNING("Couldn't grow registered cvar list to %d for '%s'; %s", newsize, addname, strerror(errno));
 			RETURN_ERRNO(NULL, ME_NOMEM);
@@ -293,13 +293,13 @@ MRegCvar* DLLINTERNAL MRegCvarList::add(const char* addname) {
 		vlist = temp;
 		size = newsize;
 		// initialize new (unused) entries
-		for (int i = endlist; i < size; i++) {
+		for (auto i = endlist; i < size; i++) {
 			memset(&vlist[i], 0, sizeof(vlist[i]));
 			vlist[i].init(i + 1);		// 1-based
 		}
 	}
 
-	MRegCvar* icvar = &vlist[endlist];
+	auto* icvar = &vlist[endlist];
 
 	// Malloc space for the cvar and cvar name, for two reasons:
 	//  - Can't point to memory loc in plugin (another segv waiting to
@@ -328,7 +328,7 @@ MRegCvar* DLLINTERNAL MRegCvarList::add(const char* addname) {
 //  - ME_NOTFOUND	couldn't find a matching cvar
 MRegCvar* DLLINTERNAL MRegCvarList::find(const char* findname) const
 {
-	for (int i = 0; i < endlist; i++) {
+	for (auto i = 0; i < endlist; i++) {
 		if (!strcasecmp(vlist[i].data->name, findname))
 			return(&vlist[i]);
 	}
@@ -338,8 +338,8 @@ MRegCvar* DLLINTERNAL MRegCvarList::find(const char* findname) const
 // Disable any cvars belonging to the given plugin (by index id).
 void DLLINTERNAL MRegCvarList::disable(int plugin_id) const
 {
-	for (int i = 0; i < size; i++) {
-		MRegCvar* icvar = &vlist[i];
+	for (auto i = 0; i < size; i++) {
+		auto* icvar = &vlist[i];
 		if (icvar->plugid == plugin_id) {
 			icvar->status = RG_INVALID;
 			icvar->plugid = 0;
@@ -353,7 +353,7 @@ void DLLINTERNAL MRegCvarList::disable(int plugin_id) const
 // List all the registered cvars.
 void DLLINTERNAL MRegCvarList::show(void) const
 {
-	int n = 0, a = 0;
+	auto n = 0, a = 0;
 	char bplug[13 + 1], bname[20 + 1], bval[15 + 1];	// +1 for term null
 
 	META_CONS("Registered plugin cvars:");
@@ -364,10 +364,10 @@ void DLLINTERNAL MRegCvarList::show(void) const
 		sizeof(bval) - 1, "float value",
 		"string value");
 
-	for (int i = 0; i < endlist; i++) {
-		MRegCvar* icvar = &vlist[i];
+	for (auto i = 0; i < endlist; i++) {
+		auto* icvar = &vlist[i];
 		if (icvar->status == RG_VALID) {
-			MPlugin* iplug = Plugins->find(icvar->plugid);
+			auto* iplug = Plugins->find(icvar->plugid);
 			if (iplug)
 				STRNCPY(bplug, iplug->desc, sizeof(bplug));
 			else
@@ -393,7 +393,7 @@ void DLLINTERNAL MRegCvarList::show(void) const
 // List the registered cvars for the given plugin id.
 void DLLINTERNAL MRegCvarList::show(int plugin_id) const
 {
-	int n = 0;
+	auto n = 0;
 	char bname[30 + 1], bval[15 + 1];	// +1 for term null
 
 	/*
@@ -410,8 +410,8 @@ void DLLINTERNAL MRegCvarList::show(int plugin_id) const
 		sizeof(bname) - 1, "Registered cvars:",
 		sizeof(bval) - 1, "float value",
 		"string value");
-	for (int i = 0; i < endlist; i++) {
-		MRegCvar* icvar = &vlist[i];
+	for (auto i = 0; i < endlist; i++) {
+		auto* icvar = &vlist[i];
 		if (icvar->plugid != plugin_id)
 			continue;
 		STRNCPY(bname, icvar->data->name, sizeof(bname));
@@ -433,7 +433,7 @@ MRegMsgList::MRegMsgList(void)
 {
 	// initialize array
 	memset(mlist, 0, sizeof(mlist));
-	for (int i = 0; i < size; i++) {
+	for (auto i = 0; i < size; i++) {
 		mlist[i].index = i + 1;		// 1-based
 	}
 	endlist = 0;
@@ -450,7 +450,7 @@ MRegMsg* DLLINTERNAL MRegMsgList::add(const char* addname, int addmsgid, int add
 		RETURN_ERRNO(NULL, ME_MAXREACHED);
 	}
 
-	MRegMsg* imsg = &mlist[endlist];
+	auto* imsg = &mlist[endlist];
 	endlist++;
 
 	// Copy msg data into empty slot.
@@ -467,7 +467,7 @@ MRegMsg* DLLINTERNAL MRegMsgList::add(const char* addname, int addmsgid, int add
 // meta_errno values:
 //  - ME_NOTFOUND	couldn't find a matching cvar
 MRegMsg* DLLINTERNAL MRegMsgList::find(const char* findname) {
-	for (int i = 0; i < endlist; i++) {
+	for (auto i = 0; i < endlist; i++) {
 		if (!mm_strcmp(mlist[i].name, findname))
 			return(&mlist[i]);
 	}
@@ -478,7 +478,7 @@ MRegMsg* DLLINTERNAL MRegMsgList::find(const char* findname) {
 // meta_errno values:
 //  - ME_NOTFOUND	couldn't find a matching cvar
 MRegMsg* DLLINTERNAL MRegMsgList::find(int findmsgid) {
-	for (int i = 0; i < endlist; i++) {
+	for (auto i = 0; i < endlist; i++) {
 		if (mlist[i].msgid == findmsgid)
 			return(&mlist[i]);
 	}
@@ -487,13 +487,13 @@ MRegMsg* DLLINTERNAL MRegMsgList::find(int findmsgid) {
 
 // List the registered usermsgs for the gamedll.
 void DLLINTERNAL MRegMsgList::show(void) {
-	int n = 0;
+	auto n = 0;
 	char bname[25 + 1];	// +1 for term null
 
 	META_CONS("%-*s    %5s  %5s",
 		sizeof(bname) - 1, "Game registered user msgs:", "msgid", "size");
-	for (int i = 0; i < endlist; i++) {
-		MRegMsg* imsg = &mlist[i];
+	for (auto i = 0; i < endlist; i++) {
+		auto* imsg = &mlist[i];
 		STRNCPY(bname, imsg->name, sizeof(bname));
 		META_CONS("   %-*s   %3d    %3d",
 			sizeof(bname) - 1, bname,

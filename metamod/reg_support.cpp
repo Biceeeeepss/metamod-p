@@ -93,13 +93,13 @@
 // pointer to call based on CMD_ARGV(0).
 void DLLHIDDEN meta_command_handler(void) {
 	META_DEBUG(5, ("called: meta_command_handler; arg0=%s args='%s'", CMD_ARGV(0), CMD_ARGS()));
-	const char* cmd = CMD_ARGV(0);
+	const auto* cmd = CMD_ARGV(0);
 	if (!cmd) {
 		META_WARNING("Null command name in meta_command_handler() ??");
 		return;
 	}
 
-	MRegCmd* icmd = RegCmds->find(cmd);
+	auto* icmd = RegCmds->find(cmd);
 	if (!icmd) {
 		META_WARNING("Couldn't find registered plugin command: %s", cmd);
 		return;
@@ -130,7 +130,7 @@ void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
 	}
 
 	// See if this command was previously registered, ie a "reloaded" plugin.
-	MRegCmd* icmd = RegCmds->find(cmd_name);
+	auto* icmd = RegCmds->find(cmd_name);
 	if (!icmd) {
 		// If not found, add.
 		icmd = RegCmds->add(cmd_name);
@@ -181,7 +181,7 @@ void DLLHIDDEN meta_CVarRegister(cvar_t* pCvar) {
 	}
 
 	// See if this cvar was previously registered, ie a "reloaded" plugin.
-	MRegCvar* icvar = RegCvars->find(pCvar->name);
+	auto* icvar = RegCvars->find(pCvar->name);
 	if (!icvar) {
 		// If not found, add.
 		icvar = RegCvars->add(pCvar->name);

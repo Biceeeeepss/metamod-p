@@ -51,7 +51,7 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 		if (0 != strcmp(pC, "swds.dll")) return false;
 	}
 
-	const HMODULE hModule = GetModuleHandle(pC);
+	auto* const hModule = GetModuleHandle(pC);
 	if (nullptr == hModule) {
 		return false;
 	}
@@ -119,7 +119,7 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 
 int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 {
-	const char* pName = "sw.dll";
+	const auto* pName = "sw.dll";
 
 	if (!check_for_engine_module(pName)) {
 		pName = "hw.dll";
@@ -133,18 +133,18 @@ int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 
 	// Get the module handle for the engine dll we found.
 	// This is also the modules base address.
-	const HMODULE hModule = GetModuleHandle(pName);
+	auto* const hModule = GetModuleHandle(pName);
 
-	unsigned char* pBaseAddr = (unsigned char*)hModule;
+	auto* pBaseAddr = (unsigned char*)hModule;
 
 	// Check if we find a DOS header
-	const PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)hModule;
+	auto* const pDosHeader = (PIMAGE_DOS_HEADER)hModule;
 	if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE) {
 		return INVALID_DOS_SIGN;
 	}
 
 	// Check if we find a PE header
-	const PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
+	auto* const pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
 	if (pNTHeader->Signature != IMAGE_NT_SIGNATURE) {
 		return INVALID_NT_SIGN;
 	}
@@ -172,7 +172,7 @@ int DLLINTERNAL EngineInfo::vac_pe_approx(enginefuncs_t* _pFuncs)
 	// If we find functions outside this range we can't determine a valid
 	// range and have to just give up.
 
-	unsigned long* pengfuncs = (unsigned long*)_pFuncs;
+	auto* pengfuncs = (unsigned long*)_pFuncs;
 	unsigned int i, invals = 0;
 	for (i = 0, pengfuncs += i; i < 140; i++, pengfuncs++) {
 		if (((*pengfuncs) & c_VacDllEngineFuncsRangeMask) != c_VacDllEngineFuncsRangeMark) {
@@ -315,7 +315,7 @@ void DLLINTERNAL EngineInfo::set_code_range(void* _pBase, ElfW(Phdr)* _pPhdr)
 
 int DLLINTERNAL EngineInfo::initialise(enginefuncs_t* _pFuncs)
 {
-	int ret = 0;
+	auto ret = 0;
 
 	// Have to do this only once.
 	if (nullptr != m_codeStart) {

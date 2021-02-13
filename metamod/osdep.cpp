@@ -67,10 +67,10 @@ char* DLLINTERNAL my_strtok_r(char* s, const char* delim, char** ptrptr) {
 		begin = *ptrptr;
 	if (!begin)
 		return(nullptr);
-	char* end = strpbrk(begin, delim);
+	auto* end = strpbrk(begin, delim);
 	if (end) {
 		*end = '\0';
-		char* rest = end + 1;
+		auto* rest = end + 1;
 		*ptrptr = rest + strspn(rest, delim);
 	}
 	else
@@ -97,7 +97,7 @@ char* DLLINTERNAL my_strlwr(char* s) {
 int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list src_ap) {
 	va_list ap;
 	int res;
-	size_t bufsize = n;
+	auto bufsize = n;
 
 	if (s && n > 0)
 		s[0] = 0;
@@ -138,7 +138,7 @@ int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list sr
 	if (bufsize < 1024)
 		bufsize = 1024;
 
-	char* tmpbuf = (char*)malloc(bufsize * sizeof(char));
+	auto* tmpbuf = (char*)malloc(bufsize * sizeof(char));
 	if (!tmpbuf)
 		return(-1);
 
@@ -151,7 +151,7 @@ int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list sr
 	// fail well before INT_MAX.
 	while (res < 0 && bufsize <= INT_MAX) {
 		bufsize *= 2;
-		char* newbuf = (char*)realloc(tmpbuf, bufsize * sizeof(char));
+		auto* newbuf = (char*)realloc(tmpbuf, bufsize * sizeof(char));
 
 		if (!newbuf)
 			break;
@@ -180,7 +180,7 @@ int DLLINTERNAL safe_snprintf(char* s, size_t n, const char* format, ...) {
 	va_list ap;
 
 	va_start(ap, format);
-	int res = safe_vsnprintf(s, n, format, ap);
+	const auto res = safe_vsnprintf(s, n, format, ap);
 	va_end(ap);
 
 	return(res);
@@ -197,7 +197,7 @@ void DLLINTERNAL safevoid_vsnprintf(char* s, size_t n, const char* format, va_li
 		return;
 	}
 
-	int res = vsnprintf(s, n, format, ap);
+	const auto res = vsnprintf(s, n, format, ap);
 
 	// w32api returns -1 on too long write, glibc returns number of bytes it could have written if there were enough space
 	// w32api doesn't write null at all, some buggy glibc don't either
@@ -300,7 +300,7 @@ const char* DLLINTERNAL DLFNAME(void* memptr) {
 //    and pathnames are case-sensitive.
 void DLLINTERNAL normalize_pathname(char* path) {
 	META_DEBUG(8, ("normalize: %s", path));
-	for (char* cp = path; *cp; cp++) {
+	for (auto* cp = path; *cp; cp++) {
 		/*if(isupper(*cp))*/
 		*cp = tolower(*cp);
 
@@ -313,14 +313,14 @@ void DLLINTERNAL normalize_pathname(char* path) {
 // Buffer pointed to by resolved_name is assumed to be able to store a
 // string of PATH_MAX length.
 char* DLLINTERNAL realpath(const char* file_name, char* resolved_name) {
-	int ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, nullptr);
+	const int ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, nullptr);
 	if (ret > PATH_MAX) {
 		errno = ENAMETOOLONG;
 		return(nullptr);
 	}
 	if (ret > 0) {
 		WIN32_FIND_DATAA find_data;
-		HANDLE handle = FindFirstFileA(resolved_name, &find_data);
+		auto* const handle = FindFirstFileA(resolved_name, &find_data);
 		if (INVALID_HANDLE_VALUE == handle) {
 			errno = ENOENT;
 			return(nullptr);

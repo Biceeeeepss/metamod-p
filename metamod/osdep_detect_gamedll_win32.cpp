@@ -44,7 +44,7 @@
 
 //
 static unsigned long DLLINTERNAL_NOVIS va_to_mapaddr(void* mapview, IMAGE_SECTION_HEADER* sections, int num_sects, unsigned long vaddr) {
-	for (int i = 0; i < num_sects; i++)
+	for (auto i = 0; i < num_sects; i++)
 		if (vaddr >= sections[i].VirtualAddress && vaddr < sections[i].VirtualAddress + sections[i].SizeOfRawData)
 			return(rva_to_va(mapview, (vaddr - sections[i].VirtualAddress + sections[i].PointerToRawData)));
 
@@ -96,20 +96,20 @@ static IMAGE_EXPORT_DIRECTORY* DLLINTERNAL_NOVIS get_export_table(void* mapview,
 }
 
 mBOOL DLLINTERNAL is_gamedll(const char* filename) {
-	int has_GiveFnptrsToDll = 0;
-	int has_GetEntityAPI2 = 0;
-	int has_GetEntityAPI = 0;
+	auto has_GiveFnptrsToDll = 0;
+	auto has_GetEntityAPI2 = 0;
+	auto has_GetEntityAPI = 0;
 
 	// Try open file for read
-	HANDLE hFile = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
-	                           nullptr);
+	auto* const hFile = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
+	                                nullptr);
 	if (is_invalid_handle(hFile)) {
 		META_DEBUG(3, ("is_gamedll(%s): CreateFile() failed.", filename));
 		return(mFALSE);
 	}
 
 	//
-	HANDLE hMap = CreateFileMapping(hFile, nullptr, PAGE_READONLY, 0, 0, nullptr);
+	auto* const hMap = CreateFileMapping(hFile, nullptr, PAGE_READONLY, 0, 0, nullptr);
 	if (is_invalid_handle(hMap)) {
 		META_DEBUG(3, ("is_gamedll(%s): CreateFileMapping() failed.", filename));
 		CloseHandle(hFile);
@@ -117,7 +117,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 	}
 
 	//
-	void* mapview = MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0);
+	auto* mapview = MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0);
 	if (!mapview) {
 		META_DEBUG(3, ("is_gamedll(%s): MapViewOfFile() failed.", filename));
 		CloseHandle(hMap);
@@ -125,7 +125,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 		return(mFALSE);
 	}
 
-	IMAGE_NT_HEADERS* ntheaders = get_ntheaders(mapview);
+	auto* ntheaders = get_ntheaders(mapview);
 	if (!ntheaders) {
 		META_DEBUG(3, ("is_gamedll(%s): get_ntheaders() failed.", filename));
 		UnmapViewOfFile(mapview);
@@ -135,8 +135,8 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 	}
 
 	//Sections for va_to_mapaddr function
-	IMAGE_SECTION_HEADER* sections = IMAGE_FIRST_SECTION(ntheaders);
-	int num_sects = ntheaders->FileHeader.NumberOfSections;
+	auto* sections = IMAGE_FIRST_SECTION(ntheaders);
+	const int num_sects = ntheaders->FileHeader.NumberOfSections;
 	if (IsBadReadPtr(sections, num_sects * sizeof(IMAGE_SECTION_HEADER))) {
 		META_DEBUG(3, ("is_gamedll(%s): IMAGE_FIRST_SECTION() failed.", filename));
 		UnmapViewOfFile(mapview);
@@ -146,7 +146,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 	}
 
 	//
-	IMAGE_EXPORT_DIRECTORY* exports = get_export_table(mapview, ntheaders, sections, num_sects);
+	auto* exports = get_export_table(mapview, ntheaders, sections, num_sects);
 	if (!exports) {
 		META_DEBUG(3, ("is_gamedll(%s): get_export_table() failed.", filename));
 		UnmapViewOfFile(mapview);
@@ -156,7 +156,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 	}
 
 	//
-	unsigned long* names = (unsigned long*)va_to_mapaddr(mapview, sections, num_sects, exports->AddressOfNames);
+	auto* names = (unsigned long*)va_to_mapaddr(mapview, sections, num_sects, exports->AddressOfNames);
 	if (IsBadReadPtr(names, exports->NumberOfNames * sizeof(unsigned long))) {
 		META_DEBUG(3, ("is_gamedll(%s): Pointer to exported function names is invalid.", filename));
 		UnmapViewOfFile(mapview);
@@ -167,7 +167,7 @@ mBOOL DLLINTERNAL is_gamedll(const char* filename) {
 
 	for (unsigned int i = 0; i < exports->NumberOfNames; i++) {
 		//get function name with valid address
-		char* funcname = (char*)va_to_mapaddr(mapview, sections, num_sects, names[i]);
+		auto* funcname = (char*)va_to_mapaddr(mapview, sections, num_sects, names[i]);
 		if (IsBadStringPtrA(funcname, 128))
 			continue;
 

@@ -316,7 +316,7 @@ mBOOL DLLINTERNAL meta_init_gamedll(void) {
 		// our gamedir, and truncate to get the game name.
 		// (note check for both linux and win32 full pathname.)
 		STRNCPY(GameDLL.gamedir, gamedir, sizeof(GameDLL.gamedir));
-		char* cp = strrchr(gamedir, '/') + 1;
+		auto* cp = strrchr(gamedir, '/') + 1;
 		STRNCPY(GameDLL.name, cp, sizeof(GameDLL.name));
 	}
 	else {

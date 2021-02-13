@@ -456,11 +456,11 @@ static int mm_RegUserMsg(const char* pszName, int iSize) {
 	META_ENGINE_HANDLE(int, 0, FN_REGUSERMSG, pfnRegUserMsg, pi, (pszName, iSize));
 	// Expand the macro, since we need to do extra work.
 	/// RETURN_API(int)
-	const int imsgid = GET_RET_CLASS(ret_val, int);
+	const auto imsgid = GET_RET_CLASS(ret_val, int);
 
 	// Add the msgid, name, and size to our saved list, if we haven't
 	// already.
-	MRegMsg* nmsg = RegMsgs->find(imsgid);
+	auto* nmsg = RegMsgs->find(imsgid);
 	if (nmsg) {
 		if (FStrEq(pszName, nmsg->name))
 			// This name/msgid pair was already registered.
@@ -868,7 +868,7 @@ static void mm_ResetTutorMessageDecayData(void) {
 
 // Added 2005/08/11 (no SDK update):
 static void mm_QueryClientCvarValue(const edict_t * player, const char* cvarName) {
-	static mBOOL s_check = mFALSE;
+	static auto s_check = mFALSE;
 
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnQueryClientCvarValue &&
@@ -883,7 +883,7 @@ static void mm_QueryClientCvarValue(const edict_t * player, const char* cvarName
 
 // Added 2005/11/21 (no SDK update):
 static void mm_QueryClientCvarValue2(const edict_t * player, const char* cvarName, int requestID) {
-	static mBOOL s_check = mFALSE;
+	static auto s_check = mFALSE;
 
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnQueryClientCvarValue2 &&
@@ -898,7 +898,7 @@ static void mm_QueryClientCvarValue2(const edict_t * player, const char* cvarNam
 
 // Added 2009/06/19 (no SDK update):
 static int mm_EngCheckParm(const char* pchCmdLineToken, char** pchNextVal) {
-	static mBOOL s_check = mFALSE;
+	static auto s_check = mFALSE;
 
 	//Engine version didn't change when this API was added.  Check if the pointer is valid.
 	if (!s_check && g_engfuncs.pfnEngCheckParm &&
