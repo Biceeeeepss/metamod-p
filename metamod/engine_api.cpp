@@ -34,9 +34,9 @@
  *
  */
 
-#include <stddef.h>			// offsetof
-#include <stdio.h>			// vsnprintf, etc
-#include <stdarg.h>			// va_start, etc
+#include <cstddef>			// offsetof
+#include <cstdio>			// vsnprintf, etc
+#include <cstdarg>			// va_start, etc
 #include <malloc.h>			// alloca, etc
 
 #include <extdll.h>			// always
@@ -453,15 +453,14 @@ static void* mm_GetModelPtr(edict_t * pEdict) {
 }
 
 static int mm_RegUserMsg(const char* pszName, int iSize) {
-	MRegMsg* nmsg = NULL;
 	META_ENGINE_HANDLE(int, 0, FN_REGUSERMSG, pfnRegUserMsg, pi, (pszName, iSize));
 	// Expand the macro, since we need to do extra work.
 	/// RETURN_API(int)
-	int imsgid = GET_RET_CLASS(ret_val, int);
+	const int imsgid = GET_RET_CLASS(ret_val, int);
 
 	// Add the msgid, name, and size to our saved list, if we haven't
 	// already.
-	nmsg = RegMsgs->find(imsgid);
+	MRegMsg* nmsg = RegMsgs->find(imsgid);
 	if (nmsg) {
 		if (FStrEq(pszName, nmsg->name))
 			// This name/msgid pair was already registered.

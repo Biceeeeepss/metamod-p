@@ -38,7 +38,7 @@
 #define MM_META_EIFACE_H
 
 #include <extdll.h>				// NEW_DLL_FUNCTIONS, enginefuncs_t
-#include <string.h>             // memset()
+#include <cstring>             // memset()
 
 #include "comp_dep.h"
 #include "osdep.h"	//unlikely, OPEN_ARGS
@@ -82,7 +82,7 @@ struct meta_new_dll_functions_t : public NEW_DLL_FUNCTIONS {
 	void DLLINTERNAL copy_to(NEW_DLL_FUNCTIONS* pFuncs);
 
 	// return the engine's version of NEW_DLL_FUNCTIONS
-	int DLLINTERNAL version(void);
+	static int DLLINTERNAL version(void);
 
 private:
 
@@ -116,7 +116,7 @@ private:
 		// Calculates our idea of the engine's version of the
 		// NEW_DLL_FUNCTIONS interface. Stores this version for future
 		// reference in m_version and returns it.
-	int DLLINTERNAL determine_interface_version(void);
+	static int DLLINTERNAL determine_interface_version(void);
 
 	// Comfort function to determine the size of the NEW_DLL_FUNCTIONS
 	// struct for the different versions.

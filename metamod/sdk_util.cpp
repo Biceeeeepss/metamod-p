@@ -33,7 +33,7 @@
 #include <extdll.h>
 #include "sdk_util.h"
 
-#include <string.h>			// for strncpy(), etc
+#include <cstring>			// for strncpy(), etc
 
 #include "osdep.h"			// win32 vsnprintf, etc
 
@@ -51,9 +51,7 @@ const char* DLLINTERNAL META_UTIL_VarArgs(const char* format, ...)
 
 short DLLINTERNAL FixedSigned16(float value, float scale)
 {
-	int output;
-
-	output = (int)(value * scale);
+	int output = (int)(value * scale);
 
 	if (output > 32767)
 		output = 32767;
@@ -66,9 +64,7 @@ short DLLINTERNAL FixedSigned16(float value, float scale)
 
 unsigned short DLLINTERNAL FixedUnsigned16(float value, float scale)
 {
-	int output;
-
-	output = (int)(value * scale);
+	int output = (int)(value * scale);
 	if (output < 0)
 		output = 0;
 	if (output > 0xFFFF)

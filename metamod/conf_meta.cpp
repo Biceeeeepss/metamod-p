@@ -34,9 +34,9 @@
  *
  */
 
-#include <stdio.h>			// FILE,
-#include <stdlib.h>			// atoi
-#include <ctype.h>			// isdigit
+#include <cstdio>			// FILE,
+#include <cstdlib>			// atoi
+#include <cctype>			// isdigit
 
 #include <extdll.h>			// always
 
@@ -58,7 +58,8 @@ void DLLINTERNAL MConfig::init(option_t* global_options) {
 		set(optp, optp->init);
 }
 
-option_t* DLLINTERNAL MConfig::find(const char* lookup) {
+option_t* DLLINTERNAL MConfig::find(const char* lookup) const
+{
 	option_t* optp;
 
 	for (optp = list; optp->name && !strmatch(optp->name, lookup); optp++);
@@ -197,7 +198,8 @@ mBOOL DLLINTERNAL MConfig::load(const char* fn) {
 	return(mTRUE);
 }
 
-void DLLINTERNAL MConfig::show(void) {
+void DLLINTERNAL MConfig::show(void) const
+{
 	if (filename)
 		META_CONS("%s and %s:", "Config options from localinfo", filename);
 	else

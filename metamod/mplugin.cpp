@@ -34,7 +34,7 @@
  *
  */
 
-#include <errno.h>				// errno, etc
+#include <cerrno>				// errno, etc
 #include <malloc.h>				// malloc, etc
 #include <sys/types.h>			// stat
 #include <sys/stat.h>			// stat
@@ -291,7 +291,7 @@ mBOOL DLLINTERNAL MPlugin::resolve(void) {
 	else
 		file = pathname;
 	// store pathname: the gamedir relative path, or an absolute path
-	int len = strlen(GameDLL.gamedir);
+	const int len = strlen(GameDLL.gamedir);
 	if (strncasecmp(pathname, GameDLL.gamedir, len) == 0)
 		STRNCPY(filename, pathname + len + 1, sizeof(filename));
 	else
@@ -506,7 +506,7 @@ mBOOL DLLINTERNAL MPlugin::platform_match(MPlugin* other) {
 	if (end == NULL || other_end == NULL)
 		return(mFALSE);
 
-	int prefixlen = end - file;
+	const int prefixlen = end - file;
 	if ((other_end - other->file) != prefixlen)
 		return(mFALSE);
 
@@ -644,7 +644,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// GiveFnptrsToDll before Meta_Query, because the latter typically uses
 	// engine functions like AlertMessage, which have to be passed along via
 	// GiveFnptrsToDll.
-	META_QUERY_FN pfn_query = (META_QUERY_FN)DLSYM(handle, "Meta_Query");
+	const META_QUERY_FN pfn_query = (META_QUERY_FN)DLSYM(handle, "Meta_Query");
 	if (!pfn_query) {
 		META_WARNING("dll: Failed query plugin '%s'; Couldn't find Meta_Query(): %s", desc, DLERROR());
 		// caller will dlclose()
@@ -665,7 +665,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// This passes nothing and returns nothing, and the routine in the
 	// plugin can NOT use any Engine functions, as they haven't been
 	// provided yet (done next, in GiveFnptrsToDll).
-	META_INIT_FN pfn_init = (META_INIT_FN)DLSYM(handle, "Meta_Init");
+	const META_INIT_FN pfn_init = (META_INIT_FN)DLSYM(handle, "Meta_Init");
 	if (pfn_init) {
 		pfn_init();
 		META_DEBUG(6, ("dll: Plugin '%s': Called Meta_Init()", desc));
@@ -763,7 +763,7 @@ mBOOL DLLINTERNAL MPlugin::query(void) {
 	// Check for version differences!
 	//
 	if (NULL != (pfn_give_pext_funcs = (META_GIVE_PEXT_FUNCTIONS_FN)DLSYM(handle, "Meta_PExtGiveFnptrs"))) {
-		int plugin_pext_version = (*pfn_give_pext_funcs)(
+		const int plugin_pext_version = (*pfn_give_pext_funcs)(
 			META_PEXT_VERSION, (pextension_funcs_t*)(&(mutil_funcs.pfnLoadPlugin)));
 
 		//if plugin is newer, we got incompatibility problem!
@@ -838,7 +838,7 @@ mBOOL DLLINTERNAL MPlugin::attach(PLUG_LOADTIME now) {
 	memset(&meta_table, 0, sizeof(meta_table));
 	// get table of function tables,
 	// give public meta globals
-	int ret = pfn_attach(now, &meta_table, &PublicMetaGlobals, &gamedll_funcs);
+	const int ret = pfn_attach(now, &meta_table, &PublicMetaGlobals, &gamedll_funcs);
 	if (ret != TRUE) {
 		META_WARNING("dll: Failed attach plugin '%s': Error from Meta_Attach(): %d", desc, ret);
 		// caller will dlclose()
@@ -960,7 +960,7 @@ mBOOL DLLINTERNAL MPlugin::plugin_unload(plid_t plid, PLUG_LOADTIME now, PL_UNLO
 	pl_unloader->is_unloader = mTRUE;
 
 	// try unload
-	PLUG_ACTION old_action = action;
+	const PLUG_ACTION old_action = action;
 	action = PA_UNLOAD;
 	if (unload(now, reason, (reason == PNL_CMD_FORCED) ? PNL_PLG_FORCED : PNL_PLUGIN)) {
 		META_DEBUG(1, ("Unloaded plugin '%s'", desc));
@@ -1098,7 +1098,7 @@ mBOOL DLLINTERNAL MPlugin::detach(PLUG_LOADTIME now, PL_UNLOAD_REASON reason) {
 		RETURN_ERRNO(mFALSE, ME_DLMISSING);
 	}
 
-	int ret = pfn_detach(now, reason);
+	const int ret = pfn_detach(now, reason);
 	if (ret != TRUE) {
 		META_WARNING("dll: Failed detach plugin '%s': Error from Meta_Detach(): %d", desc, ret);
 		RETURN_ERRNO(mFALSE, ME_DLERROR);
@@ -1277,7 +1277,7 @@ mBOOL DLLINTERNAL MPlugin::clear(void) {
 void DLLINTERNAL MPlugin::show(void) {
 	char* cp;
 	int n;
-	int width = 13;
+	const int width = 13;
 	META_CONS("%*s: %s", width, "name", info ? info->name : "(nil)");
 	META_CONS("%*s: %s", width, "desc", desc);
 	META_CONS("%*s: %s", width, "status", str_status());
@@ -1365,7 +1365,7 @@ mBOOL DLLINTERNAL MPlugin::newer_file(void) {
 
 	if (stat(pathname, &st) != 0)
 		RETURN_ERRNO(mFALSE, ME_NOFILE);
-	time_t file_time = st.st_ctime > st.st_mtime ? st.st_ctime : st.st_mtime;
+	const time_t file_time = st.st_ctime > st.st_mtime ? st.st_ctime : st.st_mtime;
 	META_DEBUG(5, ("newer_file? file=%s; load=%d, file=%d; ctime=%d, mtime=%d",
 		file, time_loaded, file_time, st.st_ctime, st.st_mtime));
 	if (file_time > time_loaded)

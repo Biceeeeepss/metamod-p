@@ -29,7 +29,7 @@
  *
  */
 
-#include <stddef.h>			// offsetof
+#include <cstddef>			// offsetof
 #include <extdll.h>
 
 #include "ret_type.h"
@@ -88,14 +88,13 @@ void DLLINTERNAL main_hook_function_void(unsigned int api_info_offset, enum_api_
 	}
 
 	//Setup
-	int loglevel = api_info->loglevel;
+	const int loglevel = api_info->loglevel;
 	META_RES mres = MRES_UNSET;
 	META_RES status = MRES_UNSET;
-	META_RES prev_mres = MRES_UNSET;
 	void* pfn_routine = NULL;
 
 	//Pre plugin functions
-	prev_mres = MRES_UNSET;
+	META_RES prev_mres = MRES_UNSET;
 	for (i = 0; likely(i < Plugins->endlist); i++) {
 		iplug = &Plugins->plist[i];
 

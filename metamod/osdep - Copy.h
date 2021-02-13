@@ -37,9 +37,9 @@
 #ifndef OSDEP_H
 #define OSDEP_H
 
-#include <cstring>			// strerror()
-#include <cctype>			// isupper, tolower
-#include <cerrno>			// errno
+#include <string.h>			// strerror()
+#include <ctype.h>			// isupper, tolower
+#include <errno.h>			// errno
 
  // Various differences between WIN32 and Linux.
 
@@ -190,7 +190,7 @@ char* DLLINTERNAL my_strlwr(char* s);
 #ifdef linux
 #include <limits.h>
 #elif defined(_WIN32)
-#include <cstdlib>
+#include <stdlib.h>
 #define NAME_MAX	_MAX_FNAME
 #ifndef PATH_MAX
 #define PATH_MAX	_MAX_PATH

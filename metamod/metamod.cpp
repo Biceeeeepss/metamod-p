@@ -35,7 +35,7 @@
  */
 
 #include <malloc.h>				// malloc, etc
-#include <errno.h>				// errno, etc
+#include <cerrno>				// errno, etc
 
 #include <extdll.h>				// always
 #include "enginecallbacks.h"		// GET_GAME_DIR, etc
@@ -93,7 +93,7 @@ int metamod_not_loaded = 0;
 // Very first metamod function that's run.
 // Do startup operations...
 int DLLINTERNAL metamod_startup(void) {
-	char* cp, * mmfile = NULL, * cfile = NULL;
+	char* cp;
 
 	META_CONS("   ");
 	META_CONS("   %s version %s Copyright (c) 2001-%s %s", VNAME, VVERSION, COPYRIGHT_YEAR, VAUTHOR);
@@ -149,7 +149,7 @@ int DLLINTERNAL metamod_startup(void) {
 	// Init default values
 	Config->init(global_options);
 	// Find config file
-	cfile = CONFIG_INI;
+	char* cfile = CONFIG_INI;
 	if ((cp = LOCALINFO("mm_configfile")) && *cp != '\0') {
 		META_LOG("Configfile specified via localinfo: %s", cp);
 		if (valid_gamedir_file(cp))
@@ -243,7 +243,7 @@ int DLLINTERNAL metamod_startup(void) {
 	// In fact, we need gamedir even earlier, so moved up above.
 
 	// Fall back to old plugins filename, if configured one isn't found.
-	mmfile = PLUGINS_INI;
+	char* mmfile = PLUGINS_INI;
 	if (!valid_gamedir_file(PLUGINS_INI) && valid_gamedir_file(OLD_PLUGINS_INI))
 		mmfile = OLD_PLUGINS_INI;
 	if (valid_gamedir_file(Config->plugins_file))

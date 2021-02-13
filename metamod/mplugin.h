@@ -37,7 +37,7 @@
 #ifndef MPLUGIN_H
 #define MPLUGIN_H
 
-#include <time.h>			// time_t, etc
+#include <ctime>			// time_t, etc
 #include <malloc.h>			// malloc, etc
 
 #include <eiface.h>			// DLL_FUNCTIONS, etc
@@ -179,7 +179,7 @@ public:
 	const char* DLLINTERNAL str_source(STR_SOURCE fmt);
 
 	const char* DLLINTERNAL str_reason(PL_UNLOAD_REASON preason, PL_UNLOAD_REASON preal_reason);
-	const char* DLLINTERNAL str_loadtime(PLUG_LOADTIME pallow, STR_LOADTIME fmt);
+	static const char* DLLINTERNAL str_loadtime(PLUG_LOADTIME pallow, STR_LOADTIME fmt);
 
 	inline const char* DLLINTERNAL str_status(void) { return(str_status(ST_SIMPLE)); };
 	inline const char* DLLINTERNAL str_action(void) { return(str_action(SA_SIMPLE)); };

@@ -62,11 +62,9 @@ const game_modlist_t known_games = {
 
 // Find a modinfo corresponding to the given game name.
 const game_modinfo_t* DLLINTERNAL lookup_game(const char* name) {
-	const game_modinfo_t* imod;
 	char check_path[NAME_MAX];
-	int i;
-	for (i = 0; known_games[i].name; i++) {
-		imod = &known_games[i];
+	for (int i = 0; known_games[i].name; i++) {
+		const game_modinfo_t* imod = &known_games[i];
 		// If there are 2 or more same names check next dll file if doesn't exist
 		if (strcasematch(imod->name, name)) {
 			safevoid_snprintf(check_path, sizeof(check_path), "dlls/%s",
@@ -90,7 +88,6 @@ const game_modinfo_t* DLLINTERNAL lookup_game(const char* name) {
 // Installs gamedll from Steam cache
 mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 	int length_in;
-	int length_out;
 
 	if (!from)
 		return mFALSE;
@@ -101,7 +98,7 @@ mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 
 	// If the file seems to exist in the cache.
 	if (cachefile) {
-		int fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		const int fd = open(to, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 
 		if (fd < 0) {
 			META_DEBUG(3, ("Installing gamedll from cache: Failed to create file %s: %s", to, strerror(errno)));
@@ -109,7 +106,7 @@ mBOOL DLLINTERNAL install_gamedll(char* from, const char* to) {
 			return(mFALSE);
 		}
 
-		length_out = write(fd, cachefile, length_in);
+		int length_out = write(fd, cachefile, length_in);
 		FREE_FILE(cachefile);
 		close(fd);
 
@@ -149,7 +146,6 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 	const game_modinfo_t* known;
 	
 #ifdef _WIN32
-	char* cp;
 #elif defined(linux)
 	char* cp, *strippedfn;
 #endif
@@ -305,7 +301,7 @@ mBOOL DLLINTERNAL setup_gamedll(gamedll_t* gamedll) {
 	}
 
 	// get filename from pathname
-	cp = strrchr(gamedll->pathname, '/');
+	char* cp = strrchr(gamedll->pathname, '/');
 	if (cp)
 		cp++;
 	else

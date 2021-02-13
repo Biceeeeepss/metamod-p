@@ -48,13 +48,12 @@
 DIR* DLLINTERNAL my_opendir(const char* path)
 {
 	char search_path[MAX_PATH];
-	DIR* dir;
 
 	// Add wildcards to path
 	safevoid_snprintf(search_path, sizeof(search_path), "%s\\*.*", path);
 
 	// Get memory for new DIR object
-	dir = (DIR*)calloc(1, sizeof(DIR));
+	DIR* dir = (DIR*)calloc(1, sizeof(DIR));
 
 	// Start searching
 	dir->handle = FindFirstFileA(search_path, &dir->find_data);

@@ -42,7 +42,7 @@
 #  endif
 #endif /* linux */
 
-#include <string.h>			// strsignal, etc
+#include <cstring>			// strsignal, etc
 
 #include <extdll.h>			// always
 #include "sdk_util.h"		// REG_SVR_COMMAND, etc
@@ -92,17 +92,14 @@
 // calls made by the plugin.  It finds the appropriate plugin function
 // pointer to call based on CMD_ARGV(0).
 void DLLHIDDEN meta_command_handler(void) {
-	MRegCmd* icmd;
-	const char* cmd;
-
 	META_DEBUG(5, ("called: meta_command_handler; arg0=%s args='%s'", CMD_ARGV(0), CMD_ARGS()));
-	cmd = CMD_ARGV(0);
+	const char* cmd = CMD_ARGV(0);
 	if (!cmd) {
 		META_WARNING("Null command name in meta_command_handler() ??");
 		return;
 	}
 
-	icmd = RegCmds->find(cmd);
+	MRegCmd* icmd = RegCmds->find(cmd);
 	if (!icmd) {
 		META_WARNING("Couldn't find registered plugin command: %s", cmd);
 		return;
@@ -122,7 +119,6 @@ void DLLHIDDEN meta_command_handler(void) {
 // to a generic command-handler function (see above).
 void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
 	MPlugin* iplug = NULL;
-	MRegCmd* icmd = NULL;
 
 	META_DEBUG(4, ("called: meta_AddServerCommand; cmd_name=%s, function=%d", cmd_name, function));
 
@@ -134,7 +130,7 @@ void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
 	}
 
 	// See if this command was previously registered, ie a "reloaded" plugin.
-	icmd = RegCmds->find(cmd_name);
+	MRegCmd* icmd = RegCmds->find(cmd_name);
 	if (!icmd) {
 		// If not found, add.
 		icmd = RegCmds->add(cmd_name);
@@ -170,7 +166,6 @@ void DLLHIDDEN meta_AddServerCommand(char* cmd_name, void (*function) (void)) {
 // it will fail to work properly.
 void DLLHIDDEN meta_CVarRegister(cvar_t* pCvar) {
 	MPlugin* iplug = NULL;
-	MRegCvar* icvar = NULL;
 
 	META_DEBUG(4, ("called: meta_CVarRegister; name=%s", pCvar->name));
 
@@ -186,7 +181,7 @@ void DLLHIDDEN meta_CVarRegister(cvar_t* pCvar) {
 	}
 
 	// See if this cvar was previously registered, ie a "reloaded" plugin.
-	icvar = RegCvars->find(pCvar->name);
+	MRegCvar* icvar = RegCvars->find(pCvar->name);
 	if (!icvar) {
 		// If not found, add.
 		icvar = RegCvars->add(pCvar->name);

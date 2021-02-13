@@ -74,8 +74,8 @@ private:
 	option_t* list;
 	char* filename;
 	// functions
-	option_t* DLLINTERNAL find(const char* lookup);
-	mBOOL DLLINTERNAL set(option_t* setp, const char* value);
+	option_t* DLLINTERNAL find(const char* lookup) const;
+	static mBOOL DLLINTERNAL set(option_t* setp, const char* value);
 	// Private; to satisfy -Weffc++ "has pointer data members but does
 	// not override" copy/assignment constructor.
 	void operator=(const MConfig& src) = delete;
@@ -94,7 +94,7 @@ public:
 	void DLLINTERNAL init(option_t* global_options);
 	mBOOL DLLINTERNAL load(const char* filename);
 	mBOOL DLLINTERNAL set(const char* key, const char* value);
-	void DLLINTERNAL show(void);
+	void DLLINTERNAL show(void) const;
 };
 
 #endif /* CONF_META_H */

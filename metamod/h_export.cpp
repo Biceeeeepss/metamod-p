@@ -2,7 +2,6 @@
 // vim: set tw=75 :
 
 // h_export.cpp - main exported DLL functionality
-
 // From SDK dlls/h_export.cpp:
 
 /***
@@ -20,15 +19,17 @@
 *
 ****/
 /*
-
 ===== h_export.cpp ========================================================
-
   Entity classes exported by Halflife.
-
 */
 
+#ifdef _WIN32
+#include <ctime>
+#else
+#include <ctime>
+#endif
+
 #include <extdll.h>			// always
-#include <time.h>
 
 #include "h_export.h"		// me
 #include "metamod.h"		// engine_t, etc

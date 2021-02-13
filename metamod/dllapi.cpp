@@ -34,7 +34,7 @@
  *
  */
 
-#include <stddef.h>			// offsetof
+#include <cstddef>			// offsetof
 
 #include <extdll.h>			// always
 

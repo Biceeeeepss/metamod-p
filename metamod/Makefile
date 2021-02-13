@@ -126,20 +126,6 @@ else
 	endif
 endif
 
-MCPU=-mtune
-
-ifeq "$(GCCMAJ)" "3"
-	ifeq "$(GCCMIN)" "4"
-		MCPU=-mtune
-	endif
-endif
-ifeq "$(GCCMAJ)" "4"
-	MCPU=-mtune
-endif
-ifeq "$(GCCMAJ_GT_4)" "1"
-	MCPU=-mtune
-endif
-
 ifeq "$(OS)" "linux"
 	CC_DEP=$(CC)
 else
@@ -172,14 +158,14 @@ endif
 CCOPT = $(CCO) $(CCOPT_ARCH) -fno-exceptions -fno-rtti
 
 # optimization level; overridden for certain problematic files
-CCO = -O2 -fomit-frame-pointer -funsafe-math-optimizations
+CCO = -O2 -funsafe-math-optimizations
 CCO += -flto -fvisibility=hidden
 
 # architecture tuning by target type
 ifeq "$(TARGETTYPE)" "amd64"
 	CCOPT_ARCH =
 else
-	CCOPT_ARCH = -march=i686 $(MCPU)=generic -mmmx -msse -msse2 -pipe -mfpmath=sse
+	CCOPT_ARCH = -march=i686 -mtune=generic -mmmx -msse -msse2 -pipe -mfpmath=sse
 endif
 
 # debugging; halt on warnings

@@ -37,7 +37,7 @@
 #ifndef SUPPORT_META_H
 #define SUPPORT_META_H
 
-#include <string.h>		// strcpy(), strncat()
+#include <cstring>		// strcpy(), strncat()
 #include <sys/types.h>	// stat
 #include <sys/stat.h>	// stat
 
@@ -138,9 +138,8 @@ inline int DLLINTERNAL strncasematch(const char* s1, const char* s2, size_t n) {
 }
 
 inline int DLLINTERNAL old_valid_file(char* path) {
-	char* cp;
 	int len, ret;
-	cp = (char*)LOAD_FILE_FOR_ME(path, &len);
+	char* cp = (char*)LOAD_FILE_FOR_ME(path, &len);
 	if (cp && len)
 		ret = 1;
 	else

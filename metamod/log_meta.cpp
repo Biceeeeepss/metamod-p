@@ -34,8 +34,8 @@
  *
  */
 
-#include <stdio.h>		// vsnprintf, etc
-#include <stdarg.h>		// va_start, etc
+#include <cstdio>		// vsnprintf, etc
+#include <cstdarg>		// va_start, etc
 
 #include <extdll.h>				// always
 #include "enginecallbacks.h"		// ALERT, etc
@@ -66,7 +66,7 @@ void DLLINTERNAL META_CONS(const char* fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	unsigned int len = strlen(buf);
+	const unsigned int len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -83,7 +83,7 @@ void DLLINTERNAL META_DEV(const char* fmt, ...) {
 	va_list ap;
 
 	if (NULL != g_engfuncs.pfnCVarGetFloat) {
-		int dev = (int)CVAR_GET_FLOAT("developer");
+		const int dev = (int)CVAR_GET_FLOAT("developer");
 		if (dev == 0) return;
 	}
 
@@ -140,7 +140,7 @@ void DLLINTERNAL META_CLIENT(edict_t* pEntity, const char* fmt, ...) {
 	va_start(ap, fmt);
 	safevoid_vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-	unsigned int len = strlen(buf);
+	const unsigned int len = strlen(buf);
 	if (len < sizeof(buf) - 2) {	// -1 null, -1 for newline
 		buf[len + 0] = '\n';
 		buf[len + 1] = 0;
@@ -219,7 +219,7 @@ static void buffered_ALERT(MLOG_SERVICE service, ALERT_TYPE atype, const char* p
 // jumptable is set. Don't call it if it isn't set.
 void DLLINTERNAL flush_ALERT_buffer(void) {
 	BufferedMessage* msg = messageQueueStart;
-	int dev = (int)CVAR_GET_FLOAT("developer");
+	const int dev = (int)CVAR_GET_FLOAT("developer");
 
 	while (NULL != msg) {
 		if (msg->service == mlsDEV && dev == 0) {

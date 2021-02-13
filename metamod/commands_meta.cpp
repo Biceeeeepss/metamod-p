@@ -34,7 +34,7 @@
  *
  */
 
-#include <stdlib.h>		// strtol()
+#include <cstdlib>		// strtol()
 
 #include <extdll.h>		// always
 
@@ -340,7 +340,7 @@ void DLLINTERNAL cmd_meta_config(void) {
 
 // "meta load" console command.
 void DLLINTERNAL cmd_meta_load(void) {
-	int argc = CMD_ARGC();
+	const int argc = CMD_ARGC();
 	if (argc < 3) {
 		META_CONS("usage: meta load <name> [<description>]");
 		META_CONS("   where <name> is an identifier used to locate the plugin file.");
@@ -378,10 +378,9 @@ void DLLINTERNAL cmd_meta_load(void) {
 
 // Handle various console commands that refer to a known/loaded plugin.
 void DLLINTERNAL cmd_doplug(PLUG_CMD pcmd) {
-	int i = 0;
 	MPlugin* findp;
 
-	int argc = CMD_ARGC();
+	const int argc = CMD_ARGC();
 	const char* cmd = CMD_ARGV(1);
 	if (argc < 3) {
 		META_CONS("usage: meta %s <plugin> [<plugin> ...]", cmd);
@@ -390,13 +389,13 @@ void DLLINTERNAL cmd_doplug(PLUG_CMD pcmd) {
 		return;
 	}
 	// i=2 to skip first arg, as that's the "cmd"
-	for (i = 2; i < argc; i++) {
+	for (int i = 2; i < argc; i++) {
 		char* endptr;
 
 		const char* arg = CMD_ARGV(i);
 
 		// try to match plugin id first
-		int pindex = strtol(arg, &endptr, 10);
+		const int pindex = strtol(arg, &endptr, 10);
 		if (*arg && !*endptr)
 			findp = Plugins->find(pindex);
 		// else try to match some string (prefix)

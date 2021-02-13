@@ -42,7 +42,7 @@
 #include <dlfcn.h>			// dlopen, dladdr, etc
 #endif /* linux */
 
-#include <string.h>			// strpbrk, etc
+#include <cstring>			// strpbrk, etc
 
 #include <extdll.h>			// always
 
@@ -51,7 +51,7 @@
 #include "log_meta.h"		// META_ERROR, etc
 #include "types_meta.h"		// mBOOL
 #include "support_meta.h"	// MAX_STRBUF_LEN
-#include "limits.h"		// INT_MAX
+#include <climits>		// INT_MAX
 
 mBOOL dlclose_handle_invalid;
 
@@ -61,18 +61,16 @@ mBOOL dlclose_handle_invalid;
 // what we need it it do.
 char* DLLINTERNAL my_strtok_r(char* s, const char* delim, char** ptrptr) {
 	char* begin = NULL;
-	char* end = NULL;
-	char* rest = NULL;
 	if (s)
 		begin = s;
 	else
 		begin = *ptrptr;
 	if (!begin)
 		return(NULL);
-	end = strpbrk(begin, delim);
+	char* end = strpbrk(begin, delim);
 	if (end) {
 		*end = '\0';
-		rest = end + 1;
+		char* rest = end + 1;
 		*ptrptr = rest + strspn(rest, delim);
 	}
 	else
@@ -99,7 +97,6 @@ char* DLLINTERNAL my_strlwr(char* s) {
 int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list src_ap) {
 	va_list ap;
 	int res;
-	char* tmpbuf;
 	size_t bufsize = n;
 
 	if (s && n > 0)
@@ -141,7 +138,7 @@ int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list sr
 	if (bufsize < 1024)
 		bufsize = 1024;
 
-	tmpbuf = (char*)malloc(bufsize * sizeof(char));
+	char* tmpbuf = (char*)malloc(bufsize * sizeof(char));
 	if (!tmpbuf)
 		return(-1);
 
@@ -153,10 +150,8 @@ int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list sr
 	// with 2GB address space limit, since, in practice, malloc will
 	// fail well before INT_MAX.
 	while (res < 0 && bufsize <= INT_MAX) {
-		char* newbuf;
-
 		bufsize *= 2;
-		newbuf = (char*)realloc(tmpbuf, bufsize * sizeof(char));
+		char* newbuf = (char*)realloc(tmpbuf, bufsize * sizeof(char));
 
 		if (!newbuf)
 			break;
@@ -182,11 +177,10 @@ int DLLINTERNAL safe_vsnprintf(char* s, size_t n, const char* format, va_list sr
 }
 
 int DLLINTERNAL safe_snprintf(char* s, size_t n, const char* format, ...) {
-	int res;
 	va_list ap;
 
 	va_start(ap, format);
-	res = safe_vsnprintf(s, n, format, ap);
+	int res = safe_vsnprintf(s, n, format, ap);
 	va_end(ap);
 
 	return(res);
@@ -194,8 +188,6 @@ int DLLINTERNAL safe_snprintf(char* s, size_t n, const char* format, ...) {
 #endif
 
 void DLLINTERNAL safevoid_vsnprintf(char* s, size_t n, const char* format, va_list ap) {
-	int res;
-
 	if (!s || n <= 0)
 		return;
 
@@ -205,7 +197,7 @@ void DLLINTERNAL safevoid_vsnprintf(char* s, size_t n, const char* format, va_li
 		return;
 	}
 
-	res = vsnprintf(s, n, format, ap);
+	int res = vsnprintf(s, n, format, ap);
 
 	// w32api returns -1 on too long write, glibc returns number of bytes it could have written if there were enough space
 	// w32api doesn't write null at all, some buggy glibc don't either
@@ -307,10 +299,8 @@ const char* DLLINTERNAL DLFNAME(void* memptr) {
 //  - For linux, this requires no work, as paths uses slashes (/) natively,
 //    and pathnames are case-sensitive.
 void DLLINTERNAL normalize_pathname(char* path) {
-	char* cp;
-
 	META_DEBUG(8, ("normalize: %s", path));
-	for (cp = path; *cp; cp++) {
+	for (char* cp = path; *cp; cp++) {
 		/*if(isupper(*cp))*/
 		*cp = tolower(*cp);
 
@@ -323,16 +313,14 @@ void DLLINTERNAL normalize_pathname(char* path) {
 // Buffer pointed to by resolved_name is assumed to be able to store a
 // string of PATH_MAX length.
 char* DLLINTERNAL realpath(const char* file_name, char* resolved_name) {
-	int ret;
-	ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, NULL);
+	int ret = GetFullPathNameA(file_name, PATH_MAX, resolved_name, NULL);
 	if (ret > PATH_MAX) {
 		errno = ENAMETOOLONG;
 		return(NULL);
 	}
 	else if (ret > 0) {
-		HANDLE handle;
 		WIN32_FIND_DATAA find_data;
-		handle = FindFirstFileA(resolved_name, &find_data);
+		HANDLE handle = FindFirstFileA(resolved_name, &find_data);
 		if (INVALID_HANDLE_VALUE == handle) {
 			errno = ENOENT;
 			return(NULL);

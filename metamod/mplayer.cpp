@@ -35,7 +35,7 @@
  *
  */
 
-#include <string.h>         // strdup()
+#include <cstring>         // strdup()
 
 #include <extdll.h>			// always
 
@@ -137,7 +137,7 @@ const char* DLLINTERNAL MPlayer::is_querying_cvar(void)
 //  - ME_ARGUMENT  cvar is NULL
 void DLLINTERNAL MPlayerList::set_player_cvar_query(const edict_t* pEntity, const char* cvar)
 {
-	int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
+	const int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
 
 	if (indx < 1 || indx >= MPlayerList::NUM_SLOTS)
 		return;	//maybe output a message?
@@ -148,7 +148,7 @@ void DLLINTERNAL MPlayerList::set_player_cvar_query(const edict_t* pEntity, cons
 // Unmark player as querying a client cvar
 void DLLINTERNAL MPlayerList::clear_player_cvar_query(const edict_t* pEntity, const char* cvar)
 {
-	int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
+	const int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
 
 	if (indx < 1 || indx >= MPlayerList::NUM_SLOTS)
 		return;	//maybe output a message?
@@ -170,7 +170,7 @@ void DLLINTERNAL MPlayerList::clear_all_cvar_queries(void)
 //  - ME_NOTFOUND  invalid entity
 const char* DLLINTERNAL MPlayerList::is_querying_cvar(const edict_t* pEntity)
 {
-	int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
+	const int indx = ENTINDEX(const_cast<edict_t*>(pEntity));
 
 	if (indx < 1 || indx > gpGlobals->maxClients) {
 		RETURN_ERRNO(NULL, ME_NOTFOUND);

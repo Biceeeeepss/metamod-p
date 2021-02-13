@@ -36,9 +36,9 @@
 
 #include <extdll.h>				// always
 
-#include <stdio.h>				// fprintf()
-#include <stdlib.h>				// exit()
-#include <string.h>				// memset(), memcpy()
+#include <cstdio>				// fprintf()
+#include <cstdlib>				// exit()
+#include <cstring>				// memset(), memcpy()
 
 #include "meta_eiface.h"		// me
 #include "dllapi.h"				// FN_CVARVALUE, FN_CVARVALUE2
@@ -76,7 +76,7 @@ void DLLINTERNAL meta_new_dll_functions_t::copy_to(NEW_DLL_FUNCTIONS* _pFuncs)
 	// that version over to the receiver, so that we do not overwrite his
 	// memory with functions that he doesn't know of in his copy of the
 	// struct.
-	size_t size = get_size();
+	const size_t size = get_size();
 
 	if (0 == size) {
 		// Ok, this is a real problem and should *not* happen.

@@ -19,8 +19,8 @@
 								// _DYNAMIC, r_debug, link_map, etc.
 #endif /* _WIN32 */
 
-#include <string.h>				// strlen(), strrchr(), strcmp()
-#include <stdio.h>				// printf()
+#include <cstring>				// strlen(), strrchr(), strcmp()
+#include <cstdio>				// printf()
 
 #include "engineinfo.h"			// me
 #include "log_meta.h"			// META_DEV()
@@ -51,7 +51,7 @@ bool DLLINTERNAL EngineInfo::check_for_engine_module(const char* _pName)
 		if (0 != strcmp(pC, "swds.dll")) return false;
 	}
 
-	HMODULE hModule = GetModuleHandle(pC);
+	const HMODULE hModule = GetModuleHandle(pC);
 	if (NULL == hModule) {
 		return false;
 	}
@@ -133,18 +133,18 @@ int DLLINTERNAL EngineInfo::nthdr_module_name(void)
 
 	// Get the module handle for the engine dll we found.
 	// This is also the modules base address.
-	HMODULE hModule = GetModuleHandle(pName);
+	const HMODULE hModule = GetModuleHandle(pName);
 
 	unsigned char* pBaseAddr = (unsigned char*)hModule;
 
 	// Check if we find a DOS header
-	PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)hModule;
+	const PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)hModule;
 	if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE) {
 		return INVALID_DOS_SIGN;
 	}
 
 	// Check if we find a PE header
-	PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
+	const PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)(pBaseAddr + pDosHeader->e_lfanew);
 	if (pNTHeader->Signature != IMAGE_NT_SIGNATURE) {
 		return INVALID_NT_SIGN;
 	}

@@ -57,7 +57,6 @@ void DLLINTERNAL do_exit(int exitval) {
 int DLLINTERNAL valid_gamedir_file(const char* path) {
 	char buf[PATH_MAX];
 	struct stat st;
-	int ret, reg, size;
 
 	if (!path)
 		return(FALSE);
@@ -70,19 +69,19 @@ int DLLINTERNAL valid_gamedir_file(const char* path) {
 	else
 		safevoid_snprintf(buf, sizeof(buf), "%s/%s", GameDLL.gamedir, path);
 
-	ret = stat(buf, &st);
+	int ret = stat(buf, &st);
 	if (ret != 0) {
 		META_DEBUG(5, ("Unable to stat '%s': %s", buf, strerror(errno)));
 		return(FALSE);
 	}
 
-	reg = S_ISREG(st.st_mode);
+	int reg = S_ISREG(st.st_mode);
 	if (!reg) {
 		META_DEBUG(5, ("Not a regular file: %s", buf));
 		return(FALSE);
 	}
 
-	size = st.st_size;
+	int size = st.st_size;
 	if (!size) {
 		META_DEBUG(5, ("Empty file: %s", buf));
 		return(FALSE);

@@ -34,7 +34,7 @@
  *
  */
 
-#include <errno.h>				// errno, etc
+#include <cerrno>				// errno, etc
 
 #include <extdll.h>				// always
 
@@ -52,11 +52,10 @@
 MPluginList::MPluginList(const char* ifile)
 	: size(MAX_PLUGINS), endlist(0)
 {
-	int i;
 	// store filename of ini file
 	STRNCPY(inifile, ifile, sizeof(inifile));
 	// initialize array
-	for (i = 0; i < size; i++) {
+	for (int i = 0; i < size; i++) {
 		//reset to empty
 		plist[i].index = i + 1;
 		reset_plugin(&plist[i]);
@@ -66,10 +65,8 @@ MPluginList::MPluginList(const char* ifile)
 
 // Resets plugin to empty
 void DLLINTERNAL MPluginList::reset_plugin(MPlugin* pl_find) {
-	int i;
-
 	//calculate index
-	i = pl_find - &plist[0];
+	const int i = pl_find - &plist[0];
 
 	//free any pointers first
 	pl_find->free_api_pointers();
@@ -85,10 +82,9 @@ void DLLINTERNAL MPluginList::reset_plugin(MPlugin* pl_find) {
 //  - ME_ARGUMENT	invalid pindex
 //  - ME_NOTFOUND	couldn't find a matching plugin
 MPlugin* DLLINTERNAL MPluginList::find(int pindex) {
-	MPlugin* pfound;
 	if (pindex <= 0)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	pfound = &plist[pindex - 1];
+	MPlugin* pfound = &plist[pindex - 1];
 	if (pfound->status < PL_VALID)
 		RETURN_ERRNO(NULL, ME_NOTFOUND);
 	else
@@ -100,11 +96,9 @@ MPlugin* DLLINTERNAL MPluginList::find(int pindex) {
 //  - ME_ARGUMENT	invalid pindex
 //  - ME_NOTFOUND	couldn't find a matching plugin
 MPlugin* DLLINTERNAL MPluginList::find(DLHANDLE handle) {
-	int i;
-
 	if (!handle)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	for (i = 0; i < endlist; i++) {
+	for (int i = 0; i < endlist; i++) {
 		if (plist[i].status < PL_VALID)
 			continue;
 		if (plist[i].handle == handle)
@@ -115,12 +109,10 @@ MPlugin* DLLINTERNAL MPluginList::find(DLHANDLE handle) {
 
 // Clear source_plugin_index on all matching plugins
 void DLLINTERNAL MPluginList::clear_source_plugin_index(int source_index) {
-	int i;
-
 	if (source_index <= 0)
 		return;
 
-	for (i = 0; i < endlist; i++) {
+	for (int i = 0; i < endlist; i++) {
 		if (plist[i].status < PL_VALID)
 			continue;
 		if (plist[i].source_plugin_index == source_index)
@@ -130,12 +122,10 @@ void DLLINTERNAL MPluginList::clear_source_plugin_index(int source_index) {
 
 // Find if any plugin has been loaded by plugin 'source_index'
 mBOOL DLLINTERNAL MPluginList::found_child_plugins(int source_index) {
-	int i;
-
 	if (source_index <= 0)
 		return(mFALSE);
 
-	for (i = 0; i < endlist; i++) {
+	for (int i = 0; i < endlist; i++) {
 		if (plist[i].status < PL_VALID)
 			continue;
 		if (plist[i].source_plugin_index == source_index)
@@ -167,11 +157,9 @@ void DLLINTERNAL MPluginList::trim_list(void) {
 //  - ME_ARGUMENT	null plid_t
 //  - ME_NOTFOUND	couldn't find a matching plugin
 MPlugin* DLLINTERNAL MPluginList::find(plid_t id) {
-	int i;
-
 	if (!id)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	for (i = 0; i < endlist; i++) {
+	for (int i = 0; i < endlist; i++) {
 		if (plist[i].status < PL_VALID)
 			continue;
 		if (plist[i].info == id)
@@ -185,12 +173,10 @@ MPlugin* DLLINTERNAL MPluginList::find(plid_t id) {
 //  - ME_ARGUMENT	null path
 //  - ME_NOTFOUND	couldn't find a matching plugin
 MPlugin* DLLINTERNAL MPluginList::find(const char* findpath) {
-	int i;
-
 	if (!findpath)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
 	META_DEBUG(8, ("Looking for loaded plugin with dlfnamepath: %s", findpath));
-	for (i = 0; i < endlist; i++) {
+	for (int i = 0; i < endlist; i++) {
 		META_DEBUG(9, ("Looking at: plugin %s loadedpath: %s", plist[i].file, plist[i].pathname));
 		if (plist[i].status < PL_VALID)
 			continue;
@@ -226,7 +212,7 @@ MPlugin* DLLINTERNAL MPluginList::find_memloc(void* memptr) {
 
 	if (!memptr)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	if (!(dlhandle = get_module_handle_of_memptr(memptr))) {
+	if (!((dlhandle = get_module_handle_of_memptr(memptr)))) {
 		META_DEBUG(8, ("DLFNAME failed to find memloc %d", memptr));
 		RETURN_ERRNO(NULL, ME_NOTFOUND);
 	}
@@ -242,17 +228,15 @@ MPlugin* DLLINTERNAL MPluginList::find_memloc(void* memptr) {
 //  - ME_NOTFOUND	couldn't find a matching plugin
 //  - ME_NOTUNIQ	found multiple matches; no unique match
 MPlugin* DLLINTERNAL MPluginList::find_match(const char* prefix) {
-	int i, len;
-	MPlugin* iplug, * pfound;
 	char buf[NAME_MAX];
 
 	if (!prefix)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	pfound = NULL;
-	len = strlen(prefix);
+	MPlugin* pfound = NULL;
+	const int len = strlen(prefix);
 	safevoid_snprintf(buf, sizeof(buf), "mm_%s", prefix);
-	for (i = 0; i < endlist; i++) {
-		iplug = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* iplug = &plist[i];
 		if (iplug->status < PL_VALID)
 			continue;
 		if (iplug->info && strncasecmp(iplug->info->name, prefix, len) == 0) {
@@ -301,13 +285,11 @@ MPlugin* DLLINTERNAL MPluginList::find_match(const char* prefix) {
 //  - ME_ARGUMENT	null prefix
 //  - ME_NOTFOUND	couldn't find a matching plugin
 MPlugin* DLLINTERNAL MPluginList::find_match(MPlugin* pmatch) {
-	int i;
-	MPlugin* iplug, * pfound;
 	if (!pmatch)
 		RETURN_ERRNO(NULL, ME_ARGUMENT);
-	pfound = NULL;
-	for (i = 0; i < endlist; i++) {
-		iplug = &plist[i];
+	MPlugin* pfound = NULL;
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* iplug = &plist[i];
 		if (pmatch->platform_match(iplug)) {
 			pfound = iplug;
 			break;
@@ -325,7 +307,6 @@ MPlugin* DLLINTERNAL MPluginList::find_match(MPlugin* pmatch) {
 //  - ME_MAXREACHED		reached max plugins
 MPlugin* DLLINTERNAL MPluginList::add(MPlugin* padd) {
 	int i;
-	MPlugin* iplug;
 
 	// Find either:
 	//  - a slot in the list that's not being used
@@ -342,7 +323,7 @@ MPlugin* DLLINTERNAL MPluginList::add(MPlugin* padd) {
 	// if we found the end of the list, advance end marker
 	if (i == endlist)
 		endlist++;
-	iplug = &plist[i];
+	MPlugin* iplug = &plist[i];
 
 	// copy filename into this free slot
 	STRNCPY(iplug->filename, padd->filename, sizeof(iplug->filename));
@@ -368,7 +349,6 @@ MPlugin* DLLINTERNAL MPluginList::add(MPlugin* padd) {
 // meta_errno values:
 //  - ME_NOFILE		ini file missing or empty
 mBOOL DLLINTERNAL MPluginList::ini_startup() {
-	FILE* fp;
 	char line[MAX_STRBUF_LEN];
 	int n, ln;
 	MPlugin* pmatch;
@@ -379,7 +359,7 @@ mBOOL DLLINTERNAL MPluginList::ini_startup() {
 	}
 	full_gamedir_path(inifile, inifile);
 
-	fp = fopen(inifile, "r");
+	FILE* fp = fopen(inifile, "r");
 	if (!fp) {
 		META_WARNING("ini: Unable to open plugins file '%s': %s", inifile,
 			strerror(errno));
@@ -440,13 +420,12 @@ mBOOL DLLINTERNAL MPluginList::ini_startup() {
 // meta_errno values:
 //  - ME_NOFILE		ini file missing or empty
 mBOOL DLLINTERNAL MPluginList::ini_refresh() {
-	FILE* fp;
 	char line[MAX_STRBUF_LEN];
 	int n, ln;
 	MPlugin pl_temp;
 	MPlugin* pl_found, * pl_added;
 
-	fp = fopen(inifile, "r");
+	FILE* fp = fopen(inifile, "r");
 	if (!fp) {
 		META_WARNING("ini: Unable to open plugins file '%s': %s", inifile,
 			strerror(errno));
@@ -722,8 +701,7 @@ mBOOL DLLINTERNAL MPluginList::load() {
 // meta_errno values:
 //  - errno's from ini_refresh()
 mBOOL DLLINTERNAL MPluginList::refresh(PLUG_LOADTIME now) {
-	int i, ndone = 0, nkept = 0, nloaded = 0, nunloaded = 0, nreloaded = 0, ndelayed = 0;
-	MPlugin* iplug;
+	int ndone = 0, nkept = 0, nloaded = 0, nunloaded = 0, nreloaded = 0, ndelayed = 0;
 
 	if (!ini_refresh()) {
 		META_WARNING("dll: Problem reloading plugins.ini: %s", inifile);
@@ -732,8 +710,8 @@ mBOOL DLLINTERNAL MPluginList::refresh(PLUG_LOADTIME now) {
 	}
 
 	META_LOG("dll: Updating plugins...");
-	for (i = 0; i < endlist; i++) {
-		iplug = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* iplug = &plist[i];
 		if (iplug->status < PL_VALID)
 			continue;
 		switch (iplug->action) {
@@ -801,10 +779,8 @@ mBOOL DLLINTERNAL MPluginList::refresh(PLUG_LOADTIME now) {
 // meta_errno values:
 //  - none
 void DLLINTERNAL MPluginList::unpause_all(void) {
-	int i;
-	MPlugin* iplug;
-	for (i = 0; i < endlist; i++) {
-		iplug = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* iplug = &plist[i];
 		if (iplug->status == PL_PAUSED)
 			iplug->unpause();
 	}
@@ -815,10 +791,8 @@ void DLLINTERNAL MPluginList::unpause_all(void) {
 // meta_errno values:
 //  - none
 void DLLINTERNAL MPluginList::retry_all(PLUG_LOADTIME now) {
-	int i;
-	MPlugin* iplug;
-	for (i = 0; i < endlist; i++) {
-		iplug = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* iplug = &plist[i];
 		if (iplug->action != PA_NONE)
 			iplug->retry(now, PNL_DELAYED);
 	}
@@ -828,8 +802,7 @@ void DLLINTERNAL MPluginList::retry_all(PLUG_LOADTIME now) {
 // meta_errno values:
 //  - none
 void DLLINTERNAL MPluginList::show(int source_index) {
-	int i, n = 0, r = 0;
-	MPlugin* pl;
+	int n = 0, r = 0;
 	char desc[15 + 1], file[16 + 1], vers[7 + 1];		// plus 1 for term null
 
 	if (source_index <= 0)
@@ -845,8 +818,8 @@ void DLLINTERNAL MPluginList::show(int source_index) {
 		2 + WIDTH_MAX_PLUGINS, "src",
 		"load ", "unlod");
 
-	for (i = 0; i < endlist; i++) {
-		pl = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* pl = &plist[i];
 		if (pl->status < PL_VALID)
 			continue;
 		if (source_index > 0 && pl->source_plugin_index != source_index)
@@ -880,11 +853,10 @@ void DLLINTERNAL MPluginList::show(int source_index) {
 // meta_errno values:
 //  - none
 void DLLINTERNAL MPluginList::show_client(edict_t* pEntity) {
-	int i, n = 0;
-	MPlugin* pl;
+	int n = 0;
 	META_CLIENT(pEntity, "Currently running plugins:");
-	for (i = 0; i < endlist; i++) {
-		pl = &plist[i];
+	for (int i = 0; i < endlist; i++) {
+		MPlugin* pl = &plist[i];
 		if (pl->status != PL_RUNNING || !pl->info)
 			continue;
 		n++;
