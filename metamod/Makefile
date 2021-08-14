@@ -182,7 +182,7 @@ FILES_ALL = *.cpp *.h [A-Z]* *.rc
 
 CFLAGS=-Wall -Wno-unknown-pragmas -Wno-attributes -Wno-write-strings
 
-#CFLAGS+=-std=gnu++98 -Wno-c++11-compat
+CFLAGS+=-std=gnu++11
 
 #CFLAGS += -DTEST
 
